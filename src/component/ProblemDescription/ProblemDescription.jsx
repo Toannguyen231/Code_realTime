@@ -1,6 +1,7 @@
 import React from 'react';
 import './ProblemDescription.scss';
 import { FiFileText, FiBookOpen, FiYoutube, FiClock, FiThumbsUp, FiThumbsDown, FiMessageSquare, FiStar, FiShare } from 'react-icons/fi';
+import { MdMargin } from 'react-icons/md';
 
 const ProblemDescription = () => {
     return (
@@ -30,22 +31,39 @@ const ProblemDescription = () => {
                 <div className="example-block">
                     <h3>Example 1:</h3>
                     <div className="example-image">
-                        {/* Dummy placeholder for the image map */}
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center'}}>
-                            <div style={{border: '1px solid #ccc', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>2</div>
-                            <span>→</span>
-                            <div style={{border: '1px solid #ccc', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>4</div>
-                            <span>→</span>
-                            <div style={{border: '1px solid #ccc', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>3</div>
+                        <img src="../../../public/image copy.png" alt="" />
+                        <div className="example-p">
+                            <p>
+                                <strong>Input:</strong> l1 = [2,4,3], l2 = [5,6,4]
+                            </p>
+                            <p>
+                                <strong>Output:</strong> [7,0,8]
+                            </p>
+                            <p>
+                                <strong>Explanation:</strong> 342 + 465 = 807.
+                            </p>
                         </div>
-                        <div style={{margin: '10px 0'}}>+</div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center'}}>
-                            <div style={{border: '1px solid #ccc', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>5</div>
-                            <span>→</span>
-                            <div style={{border: '1px solid #ccc', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>6</div>
-                            <span>→</span>
-                            <div style={{border: '1px solid #ccc', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>4</div>
-                        </div>
+                    </div>
+                    <h3>Example 2:</h3>
+                    <div className='example-p'>
+                        <p>
+                            <strong>Input:</strong> l1 = [0], l2 = [0]
+                        </p>
+                        <p>
+                            <strong>Output:</strong> [0]
+                        </p>
+                        <p>
+                            <strong>Explanation:</strong> 0 + 0 = 0.
+                        </p>
+                    </div>
+                    <h3>Example 3:</h3>
+                    <div className='example-p'>
+                        <p>
+                            <strong>Input:</strong> l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+                        </p>
+                        <p>
+                            <strong>Output:</strong> [8,9,9,9,0,0,0,1]
+                        </p>
                     </div>
                 </div>
             </div>

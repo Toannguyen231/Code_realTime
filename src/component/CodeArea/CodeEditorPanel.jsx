@@ -21,7 +21,7 @@ const CodeEditorPanel = ({ code, setCode }) => {
                     <span className="icon-btn"><FiMaximize2 /></span>
                 </div>
             </div>
-            
+
             <div className="editor-body" style={{ padding: 0 }}>
                 {/* Reusing the existing CodeEditor but styling it to fit */}
                 <CodeEditor code={code} setCode={setCode} />
@@ -30,9 +30,6 @@ const CodeEditorPanel = ({ code, setCode }) => {
             <div className="editor-footer">
                 <span>Saved</span>
                 <span>Ln 1, Col 1</span>
-            </div>
-            <div style={{ backgroundColor: '#1a3a5c', color: '#fff', padding: '8px 12px', fontSize: '13px', textAlign: 'center' }}>
-                You need to log in / sign up to run or submit
             </div>
         </div>
     );

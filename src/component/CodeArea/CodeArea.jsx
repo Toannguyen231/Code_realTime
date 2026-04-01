@@ -3,13 +3,11 @@ import './CodeArea.scss';
 import CodeEditorPanel from './CodeEditorPanel';
 import ConsolePanel from './ConsolePanel';
 
-const CodeArea = () => {
-    const [code, setCode] = useState("class Solution {\npublic:\n    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {\n        \n    }\n};");
-
+const CodeArea = ({ code, setCode, output }) => {
     return (
         <div className="code-area">
             <CodeEditorPanel code={code} setCode={setCode} />
-            <ConsolePanel />
+            <ConsolePanel output={output} />
         </div>
     );
 };
