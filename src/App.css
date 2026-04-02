@@ -1,97 +1,25 @@
-﻿:root {
-  color-scheme: light;
-  background-color: #ffffff;
-}
-
-body {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #ffffff;
-}
-
+/* App Shell */
 .app-shell {
-  min-height: 100vh;
-  background-color: #ffffff;
-  color: #111827;
-  padding: 24px;
-}
-
-.room-header {
-  margin-bottom: 24px;
-}
-
-.room-header h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: #111827;
-}
-
-.room-header p {
-  margin: 12px 0 0;
-  color: #4b5563;
-}
-
-.room-body {
   display: flex;
-  gap: 0;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
+  flex-direction: column;
+  height: 100vh;
   overflow: hidden;
-  min-height: 70vh;
-  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+  background: var(--bg-primary);
 }
 
-.editor-column,
-.output-column {
-  flex: 0 0 50%;
+/* Main Area: Sidebar + Editor */
+.app-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Editor takes remaining space */
+.editor-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   min-width: 0;
-  padding: 24px;
-  background-color: #ffffff;
-}
-
-.editor-column {
-  border-right: 1px solid #d1d5db;
-}
-
-.code-textarea {
-  width: 100%;
-  max-height: calc(100vh - 320px);
-  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-  font-size: 14px;
-  padding: 16px;
-  border-radius: 12px;
-  border: none;
-  background-color: #0f172a;
-  color: #f8fafc;
-  resize: vertical;
-  overflow-y: auto;
-}
-
-.output-panel {
-  background-color: #f8fafc;
-  color: #111827;
-  border-radius: 12px;
-  border: none;
-  padding: 20px;
-  max-height: calc(100vh - 320px);
-  overflow-y: auto;
-}
-
-.output-header {
-  margin-bottom: 16px;
-}
-
-.output-header h2 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.output-text {
-  white-space: pre-wrap;
-  word-break: break-word;
-  margin: 0;
-  font-size: 0.95rem;
-  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-  color: #111827;
 }
