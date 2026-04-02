@@ -3,13 +3,13 @@ import './Navbar.scss';
 import { LiaEarlybirds } from "react-icons/lia";
 import { FiList, FiChevronLeft, FiChevronRight, FiSettings, FiMaximize, FiPlay } from 'react-icons/fi';
 import { BsCloudUpload } from 'react-icons/bs';
-
+import { LiaAccessibleIcon } from "react-icons/lia";
 const Navbar = ({ onRun, isRunning }) => {
     return (
         <nav className="navbar">
             <div className="navbar-left">
                 <div className="logo">
-                    <LiaEarlybirds size={24} color="#ffa116" /> CodeRoom
+                    <LiaAccessibleIcon size={24} color="#ffa116" /> CodeRoom
                 </div>
                 <div className="nav-item">
                     <FiList /> Problem List

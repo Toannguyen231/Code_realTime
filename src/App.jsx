@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
 
-import Header      from './component/Header/Header';
-import Sidebar     from './component/Sidebar/Sidebar';
-import CodeEditor  from './component/Editor/CodeEditor';
+import Header from './component/Header/Header';
+import Sidebar from './component/Sidebar/Sidebar';
+import CodeEditor from './component/Editor/CodeEditor';
 import OutputPanel from './component/OutputPanel/OutputPanel';
 
 // Default code per language
@@ -35,9 +35,9 @@ main();`,
 const ROOM_ID = 'ABC-123';
 
 function App() {
-  const [language, setLanguage]   = useState('C++');
-  const [code, setCode]           = useState(DEFAULT_CODE['C++']);
-  const [output, setOutput]       = useState('');
+  const [language, setLanguage] = useState('C++');
+  const [code, setCode] = useState(DEFAULT_CODE['C++']);
+  const [output, setOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
 
   // Khi đổi ngôn ngữ → reset code về mẫu mặc định
@@ -47,26 +47,65 @@ function App() {
     setOutput('');
   };
 
-  // Mock chạy code (sẽ kết nối backend thật sau)
+  const runJavaScript = (source) => {
+    const logs = [];
+    const originalConsoleLog = console.log;
+    const originalConsoleError = console.error;
+
+    const safeConsole = {
+      log: (...args) => logs.push(args.map((item) => String(item)).join(' ')),
+      error: (...args) => logs.push(args.map((item) => String(item)).join(' ')),
+    };
+
+    try {
+      // Ghi đè console tạm thời để thu log
+      console.log = safeConsole.log;
+      console.error = safeConsole.error;
+
+      new Function(source)();
+    } catch (error) {
+      logs.push(`Error: ${error.message}`);
+    } finally {
+      console.log = originalConsoleLog;
+      console.error = originalConsoleError;
+    }
+
+    return logs.length > 0 ? logs.join('\n') : 'Chạy xong, không có output.';
+  };
+
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput('');
 
-    // Giả lập gọi API backend ~1.2 giây
-    await new Promise((r) => setTimeout(r, 1200));
+    if (language === 'JavaScript') {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const result = runJavaScript(code);
+      setOutput(result);
+      setIsRunning(false);
+      return;
+    }
+
+    // Với ngôn ngữ khác, vẫn trả mock output vì chưa có backend compiler/runner.
+    await new Promise((resolve) => setTimeout(resolve, 1200));
 
     const mockOutput = {
       'C++':
         `g++ -o solution solution.cpp\n✅ Compilation successful\n\nRunning...\nHello, World!\n\nProcess finished with exit code 0`,
-      'Python':
+      Python:
         `python3 solution.py\n\nHello, World!\n\nProcess finished with exit code 0`,
-      'Java':
+      Java:
         `javac Main.java\n✅ Compilation successful\n\nRunning...\nHello, World!\n\nProcess finished with exit code 0`,
       'JavaScript':
         `node solution.js\n\nHello, World!\n\nProcess finished with exit code 0`,
     };
 
     setOutput(mockOutput[language] || 'Done.');
+    setIsRunning(false);
+  };
+
+  // Xóa output console
+  const handleClear = () => {
+    setOutput('');
     setIsRunning(false);
   };
 
@@ -96,6 +135,7 @@ function App() {
           <OutputPanel
             output={output}
             isRunning={isRunning}
+            onClear={() => setOutput('')}
           />
         </div>
       </div>

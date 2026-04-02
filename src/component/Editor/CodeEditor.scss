@@ -6,6 +6,12 @@
   background: var(--bg-editor);
 }
 
+
+.monaco-editor-container {
+  flex: 1;
+  min-height: 0;
+}
+
 /* Toolbar above the editor */
 .editor-toolbar {
   display: flex;

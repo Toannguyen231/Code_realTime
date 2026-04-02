@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './Header.scss';
 import { FiPlay, FiShare2, FiCopy, FiCheck, FiChevronDown } from 'react-icons/fi';
 import { LiaEarlybirds } from 'react-icons/lia';
-
+import { LiaAccessibleIcon } from "react-icons/lia";
 const MOCK_USERS = [
   { id: 1, name: 'Nguyễn Toàn', initials: 'NT', color: '#4caf50', online: true },
-  { id: 2, name: 'Trần Minh',   initials: 'TM', color: '#2196f3', online: true },
+  { id: 2, name: 'Trần Minh', initials: 'TM', color: '#2196f3', online: true },
 ];
 
 const LANGUAGES = ['C++', 'Python', 'Java', 'JavaScript'];
@@ -14,14 +14,14 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(roomId || 'ABC-123').catch(() => {});
+    navigator.clipboard.writeText(roomId || 'ABC-123').catch(() => { });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShare = () => {
     const link = `${window.location.origin}?room=${roomId || 'ABC-123'}`;
-    navigator.clipboard.writeText(link).catch(() => {});
+    navigator.clipboard.writeText(link).catch(() => { });
     alert(`🔗 Đã copy link tham gia:\n${link}`);
   };
 
@@ -30,7 +30,7 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId }) => {
       {/* LEFT */}
       <div className="header-left">
         <div className="logo">
-          <div className="logo-icon">⚡</div>
+          <div className="logo-icon"><LiaAccessibleIcon size={24} color="#d7d4ceff" /></div>
           CodeRoom
         </div>
 

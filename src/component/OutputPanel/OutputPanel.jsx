@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import './OutputPanel.scss';
 import { FiTerminal, FiCheckSquare, FiTrash2 } from 'react-icons/fi';
+import { Oval } from 'react-loader-spinner'
+const MIN_HEIGHT = 120;
+const MAX_HEIGHT = 500;
+const DEFAULT_HEIGHT = 220;
 
-const OutputPanel = ({ output, isRunning }) => {
+const OutputPanel = ({ output, isRunning, onClear }) => {
   const [activeTab, setActiveTab] = useState('console');
+  const [height, setHeight] = useState(DEFAULT_HEIGHT);
+  const dragRef = useRef(null);
 
   const getStatus = () => {
     if (isRunning) return { label: 'Running', cls: 'running' };
@@ -14,8 +20,41 @@ const OutputPanel = ({ output, isRunning }) => {
 
   const status = getStatus();
 
+  const handleClearCode = () => {
+    if (onClear) onClear();
+  };
+
+  // ─── Drag to resize ───────────────────────────────────────────────────────
+  const handleMouseDown = useCallback((e) => {
+    e.preventDefault();
+    const startY = e.clientY;
+    const startHeight = height;
+
+    const onMouseMove = (moveEvent) => {
+      // Kéo lên → tăng chiều cao, kéo xuống → giảm
+      const delta = startY - moveEvent.clientY;
+      const newH = Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, startHeight + delta));
+      setHeight(newH);
+    };
+
+    const onMouseUp = () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  }, [height]);
+
   return (
-    <div className="output-panel">
+    <div className="output-panel" style={{ height }}>
+      {/* ── Drag Handle ── */}
+      <div
+        className="resize-handle"
+        ref={dragRef}
+        onMouseDown={handleMouseDown}
+      />
+
       {/* Tabs */}
       <div className="output-tabs">
         <div
@@ -36,7 +75,7 @@ const OutputPanel = ({ output, isRunning }) => {
         </div>
 
         <div className="output-tab-actions">
-          <button className="btn-clear" title="Clear output">
+          <button className="btn-clear" title="Clear output" onClick={handleClearCode}>
             <FiTrash2 size={11} style={{ marginRight: 4 }} />
             Clear
           </button>
@@ -47,7 +86,18 @@ const OutputPanel = ({ output, isRunning }) => {
       <div className="output-body">
         {activeTab === 'console' ? (
           isRunning ? (
-            <span className="console-output">⏳ Đang chạy code...</span>
+            <span className="console-output">
+              <Oval
+                width={20}
+                height={20}
+                color="#4fa94d"
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#4fa94d"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            </span>
           ) : output ? (
             <pre className={`console-output ${output.toLowerCase().includes('error') ? 'error' : 'success'}`}>
               {output}
