@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import './CodeEditor.scss';
 import { FiRotateCcw, FiCopy } from 'react-icons/fi';
+import { LANGUAGE_VERSION, LANGUAGE_KEY_BY_DISPLAY } from '../Header/constants';
+import { HStack } from '@chakra-ui/react';
 
 const DEFAULT_CODE = {
-  'C++': `#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << \"Hello, World!\" << endl;\n  return 0;\n}`,
-  Python: `def main():\n  print(\"Hello, World!\")\n\nif __name__ == \"__main__\":\n  main()`,
-  Java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}`,
-  JavaScript: `function main() {\n  console.log(\"Hello, World!\");\n}\n\nmain();`,
-};
-
-const languageMap = {
-  'C++': 'cpp',
-  Python: 'python',
-  Java: 'java',
-  JavaScript: 'javascript',
+  'C++': `#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}`,
+  Python: `def main():\n  print("Hello, World!")\n\nif __name__ == "__main__":\n  main()`,
+  Java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
+  JavaScript: `function main() {\n  console.log("Hello, World!");\n}\n\nmain();`,
 };
 
 const CodeEditor = ({ code, setCode, language }) => {
-  const monacoLanguage = languageMap[language] || 'plaintext';
+  const languageKey = LANGUAGE_KEY_BY_DISPLAY[language] || language.toLowerCase();
+  const monacoLanguage = languageKey;
+  const languageVersion = LANGUAGE_VERSION[languageKey] || 'unknown';
+  const editorRef = useRef(null);
 
   const handleReset = () => {
     if (window.confirm('Reset code về mặc định?')) {
@@ -30,11 +28,16 @@ const CodeEditor = ({ code, setCode, language }) => {
     navigator.clipboard.writeText(code).catch(() => { });
   };
 
+  const onMount = (monaco) => {
+    editorRef.current = monaco;
+    editorRef.current.focus();
+  }
+
   return (
     <div className="editor-wrapper">
       <div className="editor-toolbar">
         <div className="editor-toolbar-left">
-          <span className="toolbar-label">📝 {language}</span>
+          <span className="toolbar-label">📝 {language} ({languageVersion})</span>
           <span className="toolbar-divider" />
         </div>
         <div className="editor-toolbar-right">
@@ -54,6 +57,7 @@ const CodeEditor = ({ code, setCode, language }) => {
           theme="vs-dark"
           value={code}
           onChange={(value = '') => setCode(value)}
+          onMount={onMount}
           options={{
             minimap: { enabled: false },
             automaticLayout: true,

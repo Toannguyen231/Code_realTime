@@ -5,6 +5,7 @@ import Header from './component/Header/Header';
 import Sidebar from './component/Sidebar/Sidebar';
 import CodeEditor from './component/Editor/CodeEditor';
 import OutputPanel from './component/OutputPanel/OutputPanel';
+import { executeCode } from './component/Header/api';
 
 // Default code per language
 const DEFAULT_CODE = {
@@ -77,30 +78,32 @@ function App() {
     setIsRunning(true);
     setOutput('');
 
-    if (language === 'JavaScript') {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      const result = runJavaScript(code);
-      setOutput(result);
+    try {
+      const result = await executeCode(language, code);
+
+      // Nếu API trả về lỗi RapidAPI hoặc không kèm token (thiếu key, limit vượt mức)
+      if (result.message && !result.status) {
+        setOutput(`Lỗi API: ${result.message}`);
+        return;
+      }
+
+      // Xử lý output theo cấu trúc của Judge0
+      if (result.compile_output) {
+        setOutput(result.compile_output); // Lỗi biên dịch (C++, Java)
+      } else if (result.stderr) {
+        setOutput(result.stderr); // Lỗi khi chạy (Python, JS)
+      } else if (result.stdout !== null && result.stdout !== undefined) {
+        setOutput(result.stdout || "Done."); // Kết quả trả về thành công
+      } else if (result.status && result.status.description) {
+        setOutput(`Trạng thái: ${result.status.description}`); // Các fallback khác như Time Limit Exceeded
+      } else {
+        setOutput(JSON.stringify(result, null, 2));
+      }
+    } catch (error) {
+      setOutput(`Error: ${error.message}`);
+    } finally {
       setIsRunning(false);
-      return;
     }
-
-    // Với ngôn ngữ khác, vẫn trả mock output vì chưa có backend compiler/runner.
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
-    const mockOutput = {
-      'C++':
-        `g++ -o solution solution.cpp\n✅ Compilation successful\n\nRunning...\nHello, World!\n\nProcess finished with exit code 0`,
-      Python:
-        `python3 solution.py\n\nHello, World!\n\nProcess finished with exit code 0`,
-      Java:
-        `javac Main.java\n✅ Compilation successful\n\nRunning...\nHello, World!\n\nProcess finished with exit code 0`,
-      'JavaScript':
-        `node solution.js\n\nHello, World!\n\nProcess finished with exit code 0`,
-    };
-
-    setOutput(mockOutput[language] || 'Done.');
-    setIsRunning(false);
   };
 
   // Xóa output console

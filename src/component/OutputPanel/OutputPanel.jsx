@@ -24,6 +24,8 @@ const OutputPanel = ({ output, isRunning, onClear }) => {
     if (onClear) onClear();
   };
 
+
+
   // ─── Drag to resize ───────────────────────────────────────────────────────
   const handleMouseDown = useCallback((e) => {
     e.preventDefault();
@@ -45,6 +47,8 @@ const OutputPanel = ({ output, isRunning, onClear }) => {
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
   }, [height]);
+
+
 
   return (
     <div className="output-panel" style={{ height }}>

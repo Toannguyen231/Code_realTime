@@ -3,12 +3,19 @@ import './Header.scss';
 import { FiPlay, FiShare2, FiCopy, FiCheck, FiChevronDown } from 'react-icons/fi';
 import { LiaEarlybirds } from 'react-icons/lia';
 import { LiaAccessibleIcon } from "react-icons/lia";
+import { LANGUAGE_VERSION, LANGUAGE_DISPLAY_NAME } from './constants';
+import LanguageSelector from './LanguageSelector';
+
+const languageOptions = Object.entries(LANGUAGE_VERSION).map(([key, version]) => ({
+  key,
+  label: LANGUAGE_DISPLAY_NAME[key] || key,
+  version,
+}));
+
 const MOCK_USERS = [
   { id: 1, name: 'Nguyễn Toàn', initials: 'NT', color: '#4caf50', online: true },
   { id: 2, name: 'Trần Minh', initials: 'TM', color: '#2196f3', online: true },
 ];
-
-const LANGUAGES = ['C++', 'Python', 'Java', 'JavaScript'];
 
 const Header = ({ onRun, isRunning, language, setLanguage, roomId }) => {
   const [copied, setCopied] = useState(false);
@@ -18,6 +25,7 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId }) => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
 
   const handleShare = () => {
     const link = `${window.location.origin}?room=${roomId || 'ABC-123'}`;
@@ -50,15 +58,12 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId }) => {
 
         {/* Language selector */}
         <div className="lang-select-wrap">
-          <select
-            className="lang-select"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-          >
-            {LANGUAGES.map((l) => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
+
+          <LanguageSelector
+            language={language}
+            setLanguage={setLanguage}
+            options={languageOptions}
+          />
           <FiChevronDown
             size={12}
             style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text-muted)' }}
