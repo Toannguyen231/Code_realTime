@@ -4,7 +4,10 @@ const LANGUAGE_ID = {
     cpp: 54,
     python: 71,
     java: 62,
-    javascript: 63
+    javascript: 63,
+    typescript: 74,
+    csharp: 51,
+    php: 68
 };
 
 // Hỗ trợ mã hóa Base64 cho chuỗi Unicode/UTF-8 an toàn
@@ -18,7 +21,7 @@ const decodeBase64 = (str) => {
     try {
         return decodeURIComponent(escape(atob(str)));
     } catch (e) {
-        return atob(str); // Fallback nếu chuỗi không phải UTF-8
+        return atob(str);
     }
 };
 

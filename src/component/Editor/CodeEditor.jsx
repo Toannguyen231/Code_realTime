@@ -3,13 +3,16 @@ import Editor from '@monaco-editor/react';
 import './CodeEditor.scss';
 import { FiRotateCcw, FiCopy } from 'react-icons/fi';
 import { LANGUAGE_VERSION, LANGUAGE_KEY_BY_DISPLAY } from '../Header/constants';
-import { HStack } from '@chakra-ui/react';
+
 
 const DEFAULT_CODE = {
   'C++': `#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}`,
   Python: `def main():\n  print("Hello, World!")\n\nif __name__ == "__main__":\n  main()`,
   Java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
   JavaScript: `function main() {\n  console.log("Hello, World!");\n}\n\nmain();`,
+  TypeScript: `function main(): void {\n  console.log("Hello, World!");\n}\n\nmain();`,
+  'C#': `using System;\n\nclass Program {\n  static void Main() {\n    Console.WriteLine("Hello, World!");\n  }\n}`,
+  PHP: `<?php\n\necho "Hello, World!\\n";\n\n?>`,
 };
 
 const CodeEditor = ({ code, setCode, language }) => {
