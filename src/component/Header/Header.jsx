@@ -11,9 +11,8 @@ import { FiSettings, FiZap } from 'react-icons/fi';
 
 const CODEXA_LOGO = '/codexa-logo-transparent.png';
 
-const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, onlineUsers = [], currentUser = {}, onOpenHistory, editorSettings, setEditorSettings, aiOpen, setAIOpen }) => {
+const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, onlineUsers = [], currentUser = {}, onOpenHistory, editorSettings, setEditorSettings, aiOpen, setAIOpen, onShare }) => {
   const [copied, setCopied] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const profileRef = useRef(null);
@@ -46,10 +45,7 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, 
 
 
   const handleShare = () => {
-    const link = `${window.location.origin}/room/${roomId}`;
-    navigator.clipboard.writeText(link).catch(() => { });
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2500);
+    onShare && onShare();
   };
 
   const handleLogout = () => {
@@ -138,9 +134,9 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, 
 
         <div className="divider-v" />
 
-        <button id="btn-share" className={`btn-share ${copiedLink ? 'copied' : ''}`} onClick={handleShare}>
-          {copiedLink ? <FiCheck size={13} /> : <FiShare2 size={13} />}
-          {copiedLink ? 'Link copied!' : 'Share'}
+        <button id="btn-share" className="btn-share" onClick={handleShare}>
+          <FiShare2 size={13} />
+          Share
         </button>
 
         <div className="divider-v" />

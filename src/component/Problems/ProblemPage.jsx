@@ -27,6 +27,7 @@ import {
 } from './problemUtils';
 import API, { fetchRaw } from '../../api';
 import DailyRewardsPopup from '../Daily/DailyRewardsPopup.jsx';
+import AchievementToast from '../Achievements/AchievementToast.jsx';
 import '../Daily/DailyRewardsPopup.scss';
 
 const DEFAULT_SETTINGS = {
@@ -84,6 +85,7 @@ const ProblemPage = () => {
   // Daily Rewards popup
   const [showDailyRewards, setShowDailyRewards] = useState(false);
   const [dailyRewardsData, setDailyRewardsData] = useState(null);
+  const [unlockedAchievements, setUnlockedAchievements] = useState([]);
 
   const statementRef = useRef(null);
   const workspaceRef = useRef(null);
@@ -398,6 +400,10 @@ const ProblemPage = () => {
       setSubmitResult(payload);
 
       const passed = Boolean(payload.accepted);
+
+      if (passed && payload.achievements?.length) {
+        setUnlockedAchievements(payload.achievements);
+      }
 
       // Daily Rewards popup
       if (passed && payload.daily) {
@@ -847,6 +853,11 @@ const ProblemPage = () => {
         show={showDailyRewards}
         data={dailyRewardsData}
         onClose={() => setShowDailyRewards(false)}
+      />
+
+      <AchievementToast
+        achievements={unlockedAchievements}
+        onClose={() => setUnlockedAchievements([])}
       />
     </div>
   );

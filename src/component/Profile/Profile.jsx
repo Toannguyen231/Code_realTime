@@ -7,6 +7,7 @@ import { getRankImage } from '../../utils/rankImages';
 import API from '../../api';
 import './Profile.scss';
 import HeatmapCalendar from './HeatmapCalendar.jsx';
+import AchievementsPanel from '../Achievements/AchievementsPanel.jsx';
 const RANK_COLORS = {
   'Sắt': '#A0AEC0',
   'Đồng': '#B45309',
@@ -283,6 +284,8 @@ const Profile = () => {
             <button type="submit" disabled={saving}>{saving ? 'Đang xử lý...' : 'Đổi mật khẩu'}</button>
           </form>
           
+          <AchievementsPanel />
+
           {/* Always show heatmap */}
           <HeatmapCalendar
             heatmapData={activityData?.heatmapData || []}

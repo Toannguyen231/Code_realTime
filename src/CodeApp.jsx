@@ -9,6 +9,7 @@ import CodeEditor from './component/Editor/CodeEditor';
 import OutputPanel from './component/OutputPanel/OutputPanel';
 import HistoryPanel from './component/History/HistoryPanel';
 import AIPanel from './component/AIPanel/AIPanel';
+import ShareModal from './component/ShareModal';
 import { useRoomManager } from './hooks/useRoomManager';
 import { extractSamples } from './component/Problems/problemUtils';
 import API, { fetchRaw } from './api';
@@ -146,6 +147,7 @@ function CodeApp() {
 
     // Trạng thái hiển thị Modals/Panels
     const [showHistory, setShowHistory] = useState(false);
+    const [showShare, setShowShare] = useState(false);
     const [aiOpen, setAIOpen] = useState(false);
     
     // Cài đặt trình soạn thảo (Editor settings)
@@ -253,6 +255,18 @@ function CodeApp() {
     return (
         <div className="app-shell">
             {/* ── Lịch sử Code (Modal) ── */}
+            {/* ── Share & Embed Modal ── */}
+            {showShare && (
+                <ShareModal
+                    code={code}
+                    language={language}
+                    roomId={roomId}
+                    title={`Code ${language}`}
+                    onClose={() => setShowShare(false)}
+                />
+            )}
+
+            {/* ── Lịch sử Code (Modal) ── */}
             {showHistory && (
                 <HistoryPanel
                     roomId={roomId}
@@ -282,6 +296,7 @@ function CodeApp() {
                 setEditorSettings={setEditorSettings}
                 aiOpen={aiOpen}
                 setAIOpen={setAIOpen}
+                onShare={() => setShowShare(true)}
             />
 
             {/* ── Nội dung chính: Sidebar + Editor + Output ── */}
