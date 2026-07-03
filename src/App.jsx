@@ -10,13 +10,16 @@ import AdminDashboard from './component/Admin/AdminDashboard.jsx';
 import BattleHub from './component/Battle/BattleHub.jsx';
 import BattleQueue from './component/Battle/BattleQueue.jsx';
 import BattleRoom from './component/Battle/BattleRoom.jsx';
+import LandingPage from './landing/LandingPage.jsx';
+import './landing/landing.css';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="app-shell" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="app-shell" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/rooms" element={<RoomMenu />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/problems" element={<ProblemListPage />} />
