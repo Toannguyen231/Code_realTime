@@ -4,6 +4,13 @@ import { clearSessionToken, getOrCreateSessionToken } from '../utils/sessionToke
 
 const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
 
+/**
+ * Hook: useSocket
+ * Quản lý kết nối Socket.IO với cơ chế tránh double-connect khi re-render.
+ *
+ * - Dùng ref để track connection đang tồn tại, không tạo mới nếu roomId + token không đổi.
+ * - Xử lý đúng race condition khi unmount.
+ */
 const useSocket = (roomId, token) => {
   const socketRef = useRef(null);
   const [socketState, setSocketState] = useState(null);
@@ -11,12 +18,28 @@ const useSocket = (roomId, token) => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
 
+  // Track các cleanup dependencies để tránh reconnect không cần thiết
+  const prevDepsRef = useRef('');
+
   useEffect(() => {
     if (!roomId || !token) return undefined;
+
+    const depsKey = `${roomId}:${token}`;
+    // Nếu roomId + token không đổi thì không reconnect
+    if (socketRef.current && prevDepsRef.current === depsKey) {
+      return undefined;
+    }
+    prevDepsRef.current = depsKey;
 
     let cancelled = false;
 
     const connectSocket = async () => {
+      // Disconnect socket cũ nếu có
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+
       setConnectionStatus('connecting');
 
       try {
@@ -37,6 +60,7 @@ const useSocket = (roomId, token) => {
         socketRef.current = socket;
 
         socket.on('connect', () => {
+          if (cancelled) return;
           setIsConnected(true);
           setConnectionStatus('connected');
           setSocketState(socket);
@@ -44,11 +68,13 @@ const useSocket = (roomId, token) => {
         });
 
         socket.on('disconnect', () => {
+          if (cancelled) return;
           setIsConnected(false);
           setConnectionStatus('disconnected');
         });
 
         socket.on('connect_error', (err) => {
+          if (cancelled) return;
           setIsConnected(false);
           setConnectionStatus('error');
 
@@ -59,19 +85,19 @@ const useSocket = (roomId, token) => {
         });
 
         socket.io.on('reconnect_attempt', () => {
-          setConnectionStatus('connecting');
+          if (!cancelled) setConnectionStatus('connecting');
         });
 
         socket.io.on('reconnect', () => {
-          setConnectionStatus('connected');
+          if (!cancelled) setConnectionStatus('connected');
         });
 
         socket.io.on('reconnect_error', () => {
-          setConnectionStatus('error');
+          if (!cancelled) setConnectionStatus('error');
         });
 
         socket.on('users-update', (users) => {
-          setOnlineUsers(users);
+          if (!cancelled) setOnlineUsers(users);
         });
 
         socket.on('room-error', (msg) => {
@@ -90,10 +116,14 @@ const useSocket = (roomId, token) => {
 
     return () => {
       cancelled = true;
-      socketRef.current?.disconnect();
-      socketRef.current = null;
-      setSocketState(null);
-      setConnectionStatus('disconnected');
+      // Chỉ disconnect nếu đây là cleanup cho dependencies hiện tại
+      if (prevDepsRef.current === depsKey) {
+        socketRef.current?.disconnect();
+        socketRef.current = null;
+        setSocketState(null);
+        setConnectionStatus('disconnected');
+        prevDepsRef.current = '';
+      }
     };
   }, [roomId, token]);
 

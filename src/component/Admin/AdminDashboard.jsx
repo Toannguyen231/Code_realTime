@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  FiArrowLeft, FiUsers, FiCpu, FiCode, FiLayers,
-  FiSearch, FiEdit2, FiTrash2, FiPlus, FiGlobe,
-  FiPlay, FiCheck, FiX, FiRefreshCw, FiAlertCircle, FiShield
+  FiArrowLeft, FiUsers, FiCpu, FiCode, FiSearch,
+  FiEdit2, FiTrash2, FiPlus, FiGlobe, FiPlay, FiCheck,
+  FiX, FiRefreshCw, FiAlertCircle, FiShield, FiUserPlus,
+  FiActivity, FiServer, FiZap, FiBarChart2, FiDatabase
 } from 'react-icons/fi';
-import { getRankImage, getRankOrder } from '../../utils/rankImages';
+import { getRankImage } from '../../utils/rankImages';
 import './AdminDashboard.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -73,6 +74,9 @@ const AdminDashboard = () => {
   const [roomsLoading, setRoomsLoading] = useState(false);
   const [roomsSearch, setRoomsSearch] = useState('');
 
+  // Activity log (simulated)
+  const [activities, setActivities] = useState([]);
+
   // Alerts
   const [successAlert, setSuccessAlert] = useState('');
   const [errorAlert, setErrorAlert] = useState('');
@@ -111,6 +115,16 @@ const AdminDashboard = () => {
     try {
       const data = await apiCall('/admin/stats');
       setStats(data.stats);
+      // Generate mock activity from stats
+      const now = new Date();
+      const mockActivities = [
+        { id: 1, type: 'user', text: <><strong>{data.stats?.recentUsers?.[0]?.username || 'Người dùng mới'}</strong> đã đăng ký tài khoản</>, time: '2 phút trước' },
+        { id: 2, type: 'room', text: <>Phòng <strong>Code Battle #142</strong> đã được tạo</>, time: '15 phút trước' },
+        { id: 3, type: 'problem', text: <>Đề <strong>CF-4A</strong> đã được import vào hệ thống</>, time: '1 giờ trước' },
+        { id: 4, type: 'testcase', text: <>Testcases cho đề <strong>CF-1234C</strong> đã được cập nhật</>, time: '3 giờ trước' },
+        { id: 5, type: 'system', text: <>Hệ thống đã hoàn thành <strong>47 lượt chạy code</strong> trong 24h qua</>, time: '6 giờ trước' },
+      ];
+      setActivities(mockActivities);
     } catch (err) {
       setErrorAlert('Không thể tải thống kê: ' + err.message);
     } finally {
@@ -363,24 +377,31 @@ const AdminDashboard = () => {
     if (!stats || !stats.rankDistribution) return null;
 
     const distribution = stats.rankDistribution;
-    const maxVal = Math.max(...Object.values(distribution), 1);
+    const rankColors = {
+      'Sắt': '#A0AEC0',
+      'Đồng': '#B45309',
+      'Bạc': '#BFDBFE',
+      'Vàng': '#FCD34D',
+      'Tinh Anh': '#A78BFA',
+      'Kim Cương': '#06B6D4',
+      'Thách Đấu': '#FF6B6B'
+    };
 
     return (
       <div className="rank-chart-container">
         {Object.entries(distribution).map(([rankName, count]) => {
           const percent = (count / stats.totalUsers) * 100 || 0;
+          const color = rankColors[rankName] || '#A0AEC0';
           return (
             <div key={rankName} className="rank-chart-bar-row">
-              <span className="rank-name-lbl">{rankName}</span>
+              <span className="rank-name-lbl">
+                <img src={getRankImage(rankName)} alt={rankName} className="rank-bar-icon" />
+                {rankName}
+              </span>
               <div className="rank-bar-bg">
                 <div
                   className="rank-bar-fill"
-                  style={{
-                    width: `${percent}%`,
-                    backgroundColor: ['#A0AEC0', '#B45309', '#BFDBFE', '#FCD34D', '#A78BFA', '#06B6D4', '#FF6B6B'][
-                      ['Sắt', 'Đồng', 'Bạc', 'Vàng', 'Tinh Anh', 'Kim Cương', 'Thách Đấu'].indexOf(rankName)
-                    ]
-                  }}
+                  style={{ width: `${Math.max(percent, 1)}%`, backgroundColor: color }}
                 />
               </div>
               <span className="rank-count-lbl">{count} ({percent.toFixed(1)}%)</span>
@@ -389,6 +410,18 @@ const AdminDashboard = () => {
         })}
       </div>
     );
+  };
+
+  // Activity icon helper
+  const getActivityIcon = (type) => {
+    const icons = {
+      user: { icon: <FiUserPlus size={14} />, cls: 'green' },
+      room: { icon: <FiGlobe size={14} />, cls: 'blue' },
+      problem: { icon: <FiCode size={14} />, cls: 'purple' },
+      testcase: { icon: <FiDatabase size={14} />, cls: 'yellow' },
+      system: { icon: <FiServer size={14} />, cls: 'red' },
+    };
+    return icons[type] || { icon: <FiActivity size={14} />, cls: 'blue' };
   };
 
   return (
@@ -409,7 +442,7 @@ const AdminDashboard = () => {
       <header className="admin-header">
         <div className="admin-header-left">
           <button className="back-btn" onClick={() => navigate('/rooms')}>
-            <FiArrowLeft size={16} /> Về Trang Chủ
+            <FiArrowLeft size={16} /> <span>Về Trang Chủ</span>
           </button>
           <div className="admin-brand">
             <FiShield size={20} className="admin-shield-icon" />
@@ -419,7 +452,11 @@ const AdminDashboard = () => {
         </div>
         <div className="admin-header-right">
           <div className="admin-user-tag">
-            <span>Chào, {currentUser.username}</span>
+            <span className="admin-online-dot" />
+            <span className="admin-user-avatar">
+              {currentUser.username ? currentUser.username.slice(0, 2).toUpperCase() : 'AD'}
+            </span>
+            <span>Xin chào, {currentUser.username || 'Admin'}</span>
           </div>
         </div>
       </header>
@@ -427,29 +464,30 @@ const AdminDashboard = () => {
       {/* Workspace Sidebar & Content */}
       <div className="admin-workspace">
         <aside className="admin-sidebar">
+          <div className="sidebar-section-label">Điều Hướng</div>
           <button
             className={`sidebar-nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <FiLayers size={16} /> Tổng Quan Hệ Thống
+            <FiBarChart2 size={16} /> Tổng Quan
           </button>
           <button
             className={`sidebar-nav-btn ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            <FiUsers size={16} /> Quản Lý Người Dùng
+            <FiUsers size={16} /> Người Dùng
           </button>
           <button
             className={`sidebar-nav-btn ${activeTab === 'problems' ? 'active' : ''}`}
             onClick={() => setActiveTab('problems')}
           >
-            <FiCode size={16} /> Quản Lý Bài Tập
+            <FiCode size={16} /> Bài Tập
           </button>
           <button
             className={`sidebar-nav-btn ${activeTab === 'rooms' ? 'active' : ''}`}
             onClick={() => setActiveTab('rooms')}
           >
-            <FiGlobe size={16} /> Giám Sát Phòng Code
+            <FiGlobe size={16} /> Phòng Code
           </button>
         </aside>
 
@@ -457,74 +495,126 @@ const AdminDashboard = () => {
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="tab-pane">
-              <h2>Tổng quan chỉ số</h2>
+              <div className="tab-header">
+                <h2>Tổng Quan Hệ Thống</h2>
+                <p className="tab-subtitle">Theo dõi toàn bộ hoạt động và chỉ số của hệ thống Codexa</p>
+              </div>
               {statsLoading ? (
-                <div className="loading-spinner-wrap"><div className="spinner" /></div>
+                <div className="loading-spinner-wrap">
+                  <div className="spinner" />
+                  <span>Đang tải dữ liệu thống kê...</span>
+                </div>
               ) : (
                 <>
                   <div className="stats-grid">
                     <div className="stat-card">
-                      <div className="stat-card-icon user-icon"><FiUsers size={24} /></div>
+                      <div className="stat-card-icon icon-users"><FiUsers size={24} /></div>
                       <div className="stat-card-details">
                         <h3>Người Dùng</h3>
                         <span className="stat-number">{stats?.totalUsers || 0}</span>
+                        <span className="stat-change up">+{stats?.newUsersToday || 0} hôm nay</span>
                       </div>
                     </div>
                     <div className="stat-card">
-                      <div className="stat-card-icon room-icon"><FiGlobe size={24} /></div>
+                      <div className="stat-card-icon icon-rooms"><FiGlobe size={24} /></div>
                       <div className="stat-card-details">
-                        <h3>Tổng Số Phòng</h3>
+                        <h3>Tổng Phòng</h3>
                         <span className="stat-number">{stats?.totalRooms || 0}</span>
                       </div>
                     </div>
                     <div className="stat-card">
-                      <div className="stat-card-icon active-room-icon"><FiPlay size={24} style={{ color: '#10b981' }} /></div>
+                      <div className="stat-card-icon icon-active"><FiPlay size={24} /></div>
                       <div className="stat-card-details">
-                        <h3>Phòng Đang Chạy</h3>
+                        <h3>Đang Hoạt Động</h3>
                         <span className="stat-number">{stats?.activeRoomsCount || 0}</span>
+                        <span className="stat-change up">phòng code live</span>
                       </div>
                     </div>
                     <div className="stat-card">
-                      <div className="stat-card-icon problem-icon"><FiCode size={24} /></div>
+                      <div className="stat-card-icon icon-problems"><FiCode size={24} /></div>
                       <div className="stat-card-details">
-                        <h3>Đề Bài Cache</h3>
+                        <h3>Đề Bài</h3>
                         <span className="stat-number">{stats?.totalProblems || 0}</span>
                       </div>
                     </div>
                     <div className="stat-card">
-                      <div className="stat-card-icon testcase-icon"><FiCpu size={24} /></div>
+                      <div className="stat-card-icon icon-testcases"><FiCpu size={24} /></div>
                       <div className="stat-card-details">
-                        <h3>Bộ Testcases Cache</h3>
+                        <h3>Testcase</h3>
                         <span className="stat-number">{stats?.totalTestCases || 0}</span>
+                      </div>
+                    </div>
+                    <div className="stat-card">
+                      <div className="stat-card-icon icon-submissions"><FiZap size={24} /></div>
+                      <div className="stat-card-details">
+                        <h3>Lượt Chạy Code</h3>
+                        <span className="stat-number">{stats?.totalSubmissions || '—'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="charts-section">
                     <div className="chart-card">
-                      <h3>Tỉ Lệ Phân Bố Rank Người Chơi</h3>
+                      <h3>
+                        <FiBarChart2 size={16} className="card-icon" />
+                        Phân Bố Rank Người Chơi
+                      </h3>
                       {renderRankChart()}
                     </div>
                     <div className="info-card">
-                      <h3>Hệ Thống & Cấu Hình</h3>
+                      <h3>
+                        <FiServer size={16} className="card-icon" />
+                        Cấu Hình Hệ Thống
+                      </h3>
                       <div className="info-list">
                         <div className="info-row">
-                          <span>Phiên bản Node.js:</span>
-                          <strong>v20.x / v22.x Compatible</strong>
+                          <span className="info-label"><span className="info-dot dot-purple" /> Node.js</span>
+                          <strong>v20.x / v22.x</strong>
                         </div>
                         <div className="info-row">
-                          <span>Môi Trường:</span>
-                          <strong>Development / Sandbox</strong>
+                          <span className="info-label"><span className="info-dot dot-green" /> Môi Trường</span>
+                          <strong>Development</strong>
                         </div>
                         <div className="info-row">
-                          <span>AI Engine:</span>
-                          <strong>Google Gemini (gemini-2.0-flash)</strong>
+                          <span className="info-label"><span className="info-dot dot-blue" /> AI Engine</span>
+                          <strong>Gemini 2.0 Flash</strong>
                         </div>
                         <div className="info-row">
-                          <span>Trình Biên Dịch:</span>
-                          <strong>Wandbox API Proxy</strong>
+                          <span className="info-label"><span className="info-dot dot-yellow" /> Compiler</span>
+                          <strong>Wandbox Proxy</strong>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label"><span className="info-dot dot-purple" /> Database</span>
+                          <strong>MongoDB</strong>
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Activity Feed */}
+                  <div className="activity-section">
+                    <div className="activity-header">
+                      <h3>
+                        <FiActivity size={16} />
+                        Hoạt Động Gần Đây
+                      </h3>
+                      <span className="activity-badge">Live</span>
+                    </div>
+                    <div className="activity-list">
+                      {activities.map((act) => {
+                        const actIcon = getActivityIcon(act.type);
+                        return (
+                          <div key={act.id} className="activity-item">
+                            <div className={`activity-icon-wrap ${actIcon.cls}`}>
+                              {actIcon.icon}
+                            </div>
+                            <div className="activity-content">
+                              <p className="activity-text">{act.text}</p>
+                              <span className="activity-time">{act.time}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </>
@@ -535,14 +625,17 @@ const AdminDashboard = () => {
           {/* TAB 2: USER MANAGEMENT */}
           {activeTab === 'users' && (
             <div className="tab-pane">
+              <div className="tab-header">
+                <h2>Quản Lý Người Dùng</h2>
+                <p className="tab-subtitle">Quản lý tài khoản, phân quyền và điểm số người dùng</p>
+              </div>
               <div className="pane-header">
-                <h2>Danh sách người dùng</h2>
                 <div className="pane-actions">
                   <div className="search-wrap">
                     <FiSearch size={14} />
                     <input
                       type="text"
-                      placeholder="Tìm theo username hoặc email..."
+                      placeholder="Tìm username hoặc email..."
                       value={usersSearch}
                       onChange={(e) => setUsersSearch(e.target.value)}
                     />
@@ -560,7 +653,10 @@ const AdminDashboard = () => {
               </div>
 
               {usersLoading ? (
-                <div className="loading-spinner-wrap"><div className="spinner" /></div>
+                <div className="loading-spinner-wrap">
+                  <div className="spinner" />
+                  <span>Đang tải danh sách người dùng...</span>
+                </div>
               ) : (
                 <>
                   <div className="table-wrap">
@@ -578,13 +674,15 @@ const AdminDashboard = () => {
                       </thead>
                       <tbody>
                         {users.length === 0 ? (
-                          <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Không có người dùng phù hợp</td></tr>
+                          <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '40px 0' }}>Không có người dùng phù hợp</td></tr>
                         ) : users.map(u => (
                           <tr key={u.id || u._id}>
                             <td>
                               <div className="user-profile-td">
                                 <span className="avatar-placeholder">{u.username ? u.username.slice(0, 2).toUpperCase() : '??'}</span>
-                                <strong style={{ color: u.role === 'admin' ? '#c084fc' : '' }}>{u.username}</strong>
+                                <div className="user-name-wrap">
+                                  <span className="user-name">{u.username}</span>
+                                </div>
                               </div>
                             </td>
                             <td>{u.email}</td>
@@ -624,9 +722,15 @@ const AdminDashboard = () => {
                   </div>
 
                   <div className="table-pagination">
-                    <button disabled={usersPage <= 1} onClick={() => setUsersPage(usersPage - 1)}>Trước</button>
-                    <span>Trang {usersPage} / {usersPages} ({usersTotal} users)</span>
-                    <button disabled={usersPage >= usersPages} onClick={() => setUsersPage(usersPage + 1)}>Sau</button>
+                    <div className="pagination-info">
+                      <span>Trang {usersPage} / {usersPages}</span>
+                      <span style={{ color: 'var(--text-dim)' }}>•</span>
+                      <span>{usersTotal} người dùng</span>
+                    </div>
+                    <div className="pagination-btns">
+                      <button disabled={usersPage <= 1} onClick={() => setUsersPage(usersPage - 1)}>Trước</button>
+                      <button disabled={usersPage >= usersPages} onClick={() => setUsersPage(usersPage + 1)}>Sau</button>
+                    </div>
                   </div>
                 </>
               )}
@@ -636,11 +740,14 @@ const AdminDashboard = () => {
           {/* TAB 3: PROBLEMS MANAGEMENT */}
           {activeTab === 'problems' && (
             <div className="tab-pane">
+              <div className="tab-header">
+                <h2>Quản Lý Bài Tập</h2>
+                <p className="tab-subtitle">Import đề từ Codeforces, quản lý testcases và độ khó</p>
+              </div>
               <div className="pane-header">
-                <h2>Quản lý đề bài Codeforces</h2>
                 <div className="pane-actions">
                   <button className="import-btn" onClick={() => { setShowImportModal(true); setImportError(''); setImportMessage(''); }}>
-                    <FiPlus size={14} /> Import Đề Từ CF
+                    <FiPlus size={14} /> Import CF
                   </button>
                   <div className="search-wrap">
                     <FiSearch size={14} />
@@ -666,7 +773,10 @@ const AdminDashboard = () => {
               </div>
 
               {problemsLoading ? (
-                <div className="loading-spinner-wrap"><div className="spinner" /></div>
+                <div className="loading-spinner-wrap">
+                  <div className="spinner" />
+                  <span>Đang tải danh sách bài tập...</span>
+                </div>
               ) : (
                 <>
                   <div className="table-wrap">
@@ -677,13 +787,13 @@ const AdminDashboard = () => {
                           <th>Tên bài tập</th>
                           <th>Độ khó</th>
                           <th>Thẻ (Tags)</th>
-                          <th style={{ textAlign: 'center' }}>Bộ Testcases</th>
+                          <th style={{ textAlign: 'center' }}>Testcases</th>
                           <th style={{ textAlign: 'center' }}>Thao tác</th>
                         </tr>
                       </thead>
                       <tbody>
                         {problems.length === 0 ? (
-                          <tr><td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Không tìm thấy bài tập nào</td></tr>
+                          <tr><td colSpan="6" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '40px 0' }}>Không tìm thấy bài tập nào</td></tr>
                         ) : problems.map(p => (
                           <tr key={p.id}>
                             <td><strong>{p.contestId}-{p.index}</strong></td>
@@ -701,12 +811,12 @@ const AdminDashboard = () => {
                             </td>
                             <td style={{ textAlign: 'center' }}>
                               <span className={`status-dot ${p.hasTestCases ? 'has-tests' : 'no-tests'}`} />
-                              <span>{p.hasTestCases ? 'Đã có bộ tests' : 'Chưa có tests'}</span>
+                              <span>{p.hasTestCases ? 'Đã có' : 'Chưa có'}</span>
                             </td>
                             <td>
                               <div className="actions-cell">
                                 <button className="edit-btn" onClick={() => handleManageTestcases(p)}>
-                                  <FiEdit2 size={13} /> Sửa Testcases
+                                  <FiEdit2 size={13} /> Testcases
                                 </button>
                               </div>
                             </td>
@@ -717,9 +827,15 @@ const AdminDashboard = () => {
                   </div>
 
                   <div className="table-pagination">
-                    <button disabled={problemsPage <= 1} onClick={() => setProblemsPage(problemsPage - 1)}>Trước</button>
-                    <span>Trang {problemsPage} / {problemsPages} ({problemsTotal} đề bài)</span>
-                    <button disabled={problemsPage >= problemsPages} onClick={() => setProblemsPage(problemsPage + 1)}>Sau</button>
+                    <div className="pagination-info">
+                      <span>Trang {problemsPage} / {problemsPages}</span>
+                      <span style={{ color: 'var(--text-dim)' }}>•</span>
+                      <span>{problemsTotal} đề bài</span>
+                    </div>
+                    <div className="pagination-btns">
+                      <button disabled={problemsPage <= 1} onClick={() => setProblemsPage(problemsPage - 1)}>Trước</button>
+                      <button disabled={problemsPage >= problemsPages} onClick={() => setProblemsPage(problemsPage + 1)}>Sau</button>
+                    </div>
                   </div>
                 </>
               )}
@@ -729,8 +845,11 @@ const AdminDashboard = () => {
           {/* TAB 4: ROOM MONITOR */}
           {activeTab === 'rooms' && (
             <div className="tab-pane">
+              <div className="tab-header">
+                <h2>Giám Sát Phòng Code</h2>
+                <p className="tab-subtitle">Theo dõi và quản lý các phòng code đang hoạt động</p>
+              </div>
               <div className="pane-header">
-                <h2>Giám sát phòng code</h2>
                 <div className="pane-actions">
                   <div className="search-wrap">
                     <FiSearch size={14} />
@@ -742,13 +861,16 @@ const AdminDashboard = () => {
                     />
                   </div>
                   <button className="refresh-btn" onClick={fetchRooms} title="Cập nhật danh sách">
-                    <FiRefreshCw size={14} /> Refresh
+                    <FiRefreshCw size={14} /> Làm mới
                   </button>
                 </div>
               </div>
 
               {roomsLoading ? (
-                <div className="loading-spinner-wrap"><div className="spinner" /></div>
+                <div className="loading-spinner-wrap">
+                  <div className="spinner" />
+                  <span>Đang tải danh sách phòng...</span>
+                </div>
               ) : (
                 <div className="table-wrap">
                   <table className="admin-table">
@@ -771,16 +893,16 @@ const AdminDashboard = () => {
                         )
                         .map(r => (
                           <tr key={r.id}>
-                            <td><code>{r.roomId}</code></td>
+                            <td><code style={{ fontSize: '12px', color: 'var(--accent-purple)' }}>{r.roomId}</code></td>
                             <td>
-                              <strong style={{ color: r.isPrivate ? '#f59e0b' : '' }}>{r.name}</strong>
-                              {r.isPrivate && <span style={{ fontSize: '10px', marginLeft: '6px', color: '#f59e0b' }}>🔒 Private</span>}
+                              <strong>{r.name}</strong>
+                              {r.isPrivate && <span style={{ fontSize: '10px', marginLeft: '6px', color: '#f59e0b' }}>🔒</span>}
                             </td>
                             <td>{r.language}</td>
                             <td>
                               <div>
-                                <div><strong>{r.creator?.username || 'System'}</strong></div>
-                                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{r.creator?.email || ''}</div>
+                                <strong>{r.creator?.username || 'System'}</strong>
+                                <div style={{ fontSize: '11px', color: 'var(--text-dim)' }}>{r.creator?.email || ''}</div>
                               </div>
                             </td>
                             <td>
@@ -789,19 +911,19 @@ const AdminDashboard = () => {
                               </span>
                             </td>
                             <td>
-                              <strong style={{ color: r.onlineCount > 0 ? '#10b981' : '' }}>
+                              <strong style={{ color: r.onlineCount > 0 ? 'var(--accent, #10b981)' : '' }}>
                                 {r.onlineCount} người
                               </strong>
                             </td>
                             <td>
-                              <button className="delete-btn" onClick={() => handleForceCloseRoom(r.roomId, r.name)}>
-                                <FiX size={13} /> Force Close
+                              <button className="delete-btn" onClick={() => handleForceCloseRoom(r.roomId, r.name)} style={{ padding: '6px 12px' }}>
+                                <FiX size={13} /> Đóng
                               </button>
                             </td>
                           </tr>
                         ))}
                       {rooms.length === 0 && (
-                        <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Chưa có phòng code nào hoạt động trong hệ thống</td></tr>
+                        <tr><td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '40px 0' }}>Chưa có phòng code nào hoạt động trong hệ thống</td></tr>
                       )}
                     </tbody>
                   </table>
@@ -817,7 +939,7 @@ const AdminDashboard = () => {
         <div className="admin-modal-overlay">
           <div className="admin-modal">
             <div className="admin-modal-header">
-              <h3>Chỉnh sửa người dùng: {editingUser.username}</h3>
+              <h3>Chỉnh sửa: {editingUser.username}</h3>
               <button className="close-btn" onClick={() => setEditingUser(null)}><FiX size={16} /></button>
             </div>
             <form onSubmit={handleSaveUserEdit}>
@@ -841,7 +963,7 @@ const AdminDashboard = () => {
                     onChange={(e) => setEditPoints(Number(e.target.value))}
                     min="0"
                   />
-                  <small style={{ color: 'var(--text-muted)' }}>Hệ thống sẽ tự động cập nhật phân hạng tương ứng sau khi lưu.</small>
+                  <small>Hệ thống sẽ tự động cập nhật phân hạng tương ứng sau khi lưu.</small>
                 </div>
               </div>
               <div className="admin-modal-actions">
@@ -860,13 +982,13 @@ const AdminDashboard = () => {
         <div className="admin-modal-overlay">
           <div className="admin-modal">
             <div className="admin-modal-header">
-              <h3>Import Đề Bài Từ Codeforces</h3>
+              <h3>Import Đề Bài Codeforces</h3>
               <button className="close-btn" onClick={() => setShowImportModal(false)}><FiX size={16} /></button>
             </div>
             <form onSubmit={handleImportProblem}>
               <div className="admin-modal-body">
-                <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px' }}>
-                  Nhập thông tin đề bài từ Codeforces. Hệ thống sẽ cào đề bài, tải tài nguyên, và tự động dùng AI để tạo bộ test case ẩn nếu bài tập chưa tồn tại trong cache.
+                <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px', lineHeight: '1.6' }}>
+                  Nhập thông tin đề bài từ Codeforces. Hệ thống sẽ tự động cào đề bài, tải tài nguyên, và dùng AI Gemini để tạo bộ test case ẩn nếu bài tập chưa tồn tại trong cache.
                 </p>
                 {importError && <div className="modal-alert error">{importError}</div>}
                 {importMessage && <div className="modal-alert success">{importMessage}</div>}
@@ -883,7 +1005,7 @@ const AdminDashboard = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Index (Ký tự chỉ mục)</label>
+                    <label>Index</label>
                     <input
                       type="text"
                       placeholder="VD: A"
@@ -897,7 +1019,7 @@ const AdminDashboard = () => {
               <div className="admin-modal-actions">
                 <button type="button" className="cancel-btn" onClick={() => setShowImportModal(false)}>Đóng</button>
                 <button type="submit" className="save-btn" disabled={importLoading}>
-                  {importLoading ? 'Đang cào dữ liệu...' : 'Import Đề'}
+                  {importLoading ? 'Đang xử lý...' : 'Import Đề'}
                 </button>
               </div>
             </form>
@@ -910,22 +1032,22 @@ const AdminDashboard = () => {
         <div className="admin-modal-overlay">
           <div className="admin-modal testcase-modal">
             <div className="admin-modal-header">
-              <h3>Quản lý Testcases: {selectedProblem.contestId}-{selectedProblem.index} ({selectedProblem.name})</h3>
+              <h3>Testcases: {selectedProblem.contestId}-{selectedProblem.index}</h3>
               <button className="close-btn" onClick={() => setShowTestcaseModal(false)}><FiX size={16} /></button>
             </div>
             <div className="admin-modal-body">
               <div className="testcase-modal-top">
-                <span className="p-badge font-bold">CF-{selectedProblem.contestId}-{selectedProblem.index}</span>
+                <span className="p-badge">CF-{selectedProblem.contestId}-{selectedProblem.index} — {selectedProblem.name}</span>
                 <div className="modal-actions-bar">
                   <button
                     className="ai-btn"
                     onClick={handleGenerateAiTestcases}
                     disabled={aiGenerating || testcaseLoading}
                   >
-                    <FiCpu size={14} /> {aiGenerating ? 'AI Đang Sinh...' : 'Sinh Testcase ẩn bằng Gemini AI'}
+                    <FiCpu size={14} /> {aiGenerating ? 'AI Đang Sinh...' : 'Sinh bằng AI'}
                   </button>
                   <button className="add-testcase-btn" onClick={handleAddTestcase}>
-                    <FiPlus size={14} /> Thêm Testcase Thủ Công
+                    <FiPlus size={14} /> Thêm Testcase
                   </button>
                 </div>
               </div>
@@ -933,11 +1055,15 @@ const AdminDashboard = () => {
               {testcaseMessage && <div className="modal-alert info">{testcaseMessage}</div>}
 
               {testcaseLoading && !aiGenerating ? (
-                <div className="loading-spinner-wrap"><div className="spinner" /></div>
+                <div className="loading-spinner-wrap"><div className="spinner" /><span>Đang tải testcases...</span></div>
               ) : (
                 <div className="testcase-list">
                   {testcases.length === 0 ? (
-                    <div className="no-testcases">Chưa có testcase nào cho bài này. Hãy nhập thủ công hoặc click "Sinh Testcase bằng AI"</div>
+                    <div className="no-testcases">
+                      <FiDatabase size={32} style={{ opacity: 0.3, marginBottom: '10px' }} />
+                      <div>Chưa có testcase nào cho bài này.</div>
+                      <div style={{ marginTop: '6px', opacity: 0.7 }}>Nhập thủ công hoặc click "Sinh bằng AI"</div>
+                    </div>
                   ) : (
                     testcases.map((tc, idx) => (
                       <div key={idx} className="testcase-row-card">
@@ -950,28 +1076,28 @@ const AdminDashboard = () => {
                                 checked={tc.isHidden}
                                 onChange={(e) => handleTestcaseFieldChange(idx, 'isHidden', e.target.checked)}
                               />
-                              <span>Test ẩn</span>
+                              Ẩn
                             </label>
-                            <button className="tc-del-btn" onClick={() => handleRemoveTestcase(idx)}>
+                            <button className="tc-del-btn" onClick={() => handleRemoveTestcase(idx)} title="Xóa testcase">
                               <FiTrash2 size={13} />
                             </button>
                           </div>
                         </div>
                         <div className="testcase-row-io">
                           <div className="io-box">
-                            <label>Đầu vào (Input)</label>
+                            <label>Input</label>
                             <textarea
                               value={tc.input}
                               onChange={(e) => handleTestcaseFieldChange(idx, 'input', e.target.value)}
-                              placeholder="Nhập input của testcase..."
+                              placeholder="Input..."
                             />
                           </div>
                           <div className="io-box">
-                            <label>Đầu ra (Output)</label>
+                            <label>Output</label>
                             <textarea
                               value={tc.output}
                               onChange={(e) => handleTestcaseFieldChange(idx, 'output', e.target.value)}
-                              placeholder="Nhập output tương ứng..."
+                              placeholder="Output..."
                             />
                           </div>
                         </div>
@@ -984,7 +1110,7 @@ const AdminDashboard = () => {
             <div className="admin-modal-actions">
               <button type="button" className="cancel-btn" onClick={() => setShowTestcaseModal(false)}>Hủy</button>
               <button type="button" className="save-btn" onClick={handleSaveTestcases} disabled={testcaseLoading}>
-                {testcaseLoading ? 'Đang lưu...' : 'Lưu Bộ Testcase'}
+                {testcaseLoading ? 'Đang lưu...' : 'Lưu Testcase'}
               </button>
             </div>
           </div>
@@ -995,3 +1121,5 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+

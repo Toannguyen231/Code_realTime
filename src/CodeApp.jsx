@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import './App.css';
 import './component/Problems/Problems.scss';
@@ -158,10 +158,14 @@ function CodeApp() {
         wordWrap: 'on'
     });
 
+    // Ref để có thể cancel quá trình chạy tests
+    const cancelTestsRef = useRef(false);
+
     const handleRunAllTests = async () => {
         if (runningTests || isRunning || !code.trim() || samples.length === 0) return;
         setRunningTests(true);
-        
+        cancelTestsRef.current = false;
+
         const initialResults = samples.map(s => ({
             ...s,
             actualOutput: null,
@@ -169,24 +173,60 @@ function CodeApp() {
         }));
         setTestResults(initialResults);
 
+        // Biến kiểm tra component còn mounted không
+        let cancelled = false;
+
         try {
             for (let i = 0; i < samples.length; i++) {
+                // Check cancel trước mỗi test
+                if (cancelTestsRef.current) {
+                    setRunningTests(false);
+                    return;
+                }
+
                 setTestResults(prev => {
+                    if (cancelled) return prev;
                     const newArr = [...prev];
                     newArr[i].status = 'Running';
                     return newArr;
                 });
 
-                const res = await fetchRaw('code/execute', {
-                    method: 'POST',
-                    body: {
-                        language,
-                        code,
-                        stdin: samples[i].isHidden ? samples[i].realInput : samples[i].input,
-                    },
-                });
+                let res;
+                try {
+                    res = await fetchRaw('code/execute', {
+                        method: 'POST',
+                        body: {
+                            language,
+                            code,
+                            stdin: samples[i].isHidden ? samples[i].realInput : samples[i].input,
+                        },
+                    });
+                } catch (fetchErr) {
+                    if (cancelTestsRef.current || fetchErr.name === 'AbortError') {
+                        cancelled = true;
+                        break;
+                    }
+                    setTestResults(prev => {
+                        const newArr = [...prev];
+                        newArr[i].status = 'Error';
+                        newArr[i].actualOutput = `Network error: ${fetchErr.message}`;
+                        return newArr;
+                    });
+                    continue;
+                }
 
-                const result = await res.json();
+                let result;
+                try {
+                    result = await res.json();
+                } catch {
+                    setTestResults(prev => {
+                        const newArr = [...prev];
+                        newArr[i].status = 'Error';
+                        newArr[i].actualOutput = 'Failed to parse server response.';
+                        return newArr;
+                    });
+                    continue;
+                }
 
                 let status = 'Error';
                 let actualOutput = '';
@@ -200,11 +240,11 @@ function CodeApp() {
                     const rawStdout = result.stdout || '';
                     const rawStderr = result.stderr ? `\n--- stderr ---\n${result.stderr}` : '';
                     actualOutput = rawStdout + rawStderr;
-                    
+
                     const expectedRaw = samples[i].isHidden ? samples[i].realOutput : samples[i].output;
                     const expected = (expectedRaw || '').trim();
                     const actual = rawStdout.trim();
-                    
+
                     status = (actual === expected) ? 'Passed' : 'Failed';
                     if (result.status?.id !== 3 && status !== 'Passed') {
                         status = 'Runtime Error';
@@ -219,11 +259,18 @@ function CodeApp() {
                 });
             }
         } catch (err) {
-            console.error(err);
+            if (!cancelled) console.error(err);
         } finally {
-            setRunningTests(false);
+            if (!cancelled) setRunningTests(false);
         }
     };
+
+    // Cancel tests khi component unmount
+    useEffect(() => {
+        return () => {
+            cancelTestsRef.current = true;
+        };
+    }, []);
 
     // ── Resizer Logic ──────────────────────────────────────────────────
     const [leftWidth, setLeftWidth] = useState(500); // 500px default
