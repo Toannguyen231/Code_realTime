@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiZap, FiSend, FiClock, FiUserPlus, FiTrendingUp, FiRefreshCw, FiChevronRight, FiCrosshair } from 'react-icons/fi';
+import { FiZap, FiSend, FiClock, FiUserPlus, FiTrendingUp, FiRefreshCw, FiChevronRight, FiCrosshair, FiCheck } from 'react-icons/fi';
 import API from '../../api';
 import Avatar from '../Avatar/Avatar.jsx';
+import { getRankImage } from '../../utils/rankImages';
 import '../Avatar/Avatar.scss';
 import './BattleHub.scss';
 
@@ -67,11 +68,6 @@ const BattleHub = () => {
     ? Math.round((battleStats.wins / battleStats.totalBattles) * 100)
     : 0;
 
-  const renderResultBadge = (result) => {
-    if (result === 'win') return <span className="battle-result-badge win">✅ Thắng</span>;
-    if (result === 'lose') return <span className="battle-result-badge lose">🔴 Thua</span>;
-    return <span className="battle-result-badge draw">🤝 Hoà</span>;
-  };
 
   return (
     <div className="battle-hub">
@@ -89,59 +85,80 @@ const BattleHub = () => {
         </button>
       </div>
 
-      {/* ── Stats Cards ── */}
-      <div className="battle-stats-row">
-        <div className="stat-card stat-rank">
-          <div className="stat-label">Rank</div>
-          <div className="stat-value" style={{ color: RANK_COLORS[stats.rank] || '#A0AEC0' }}>
-            {stats.rank}
+      {/* ── Rank Hero ── */}
+      <div className="rank-hero">
+        <div className="rank-badge">
+          <img src={getRankImage(stats.rank)} alt={stats.rank} className="rank-image" />
+        </div>
+        <div className="rank-info">
+          <div className="eyebrow">Hạng hiện tại</div>
+          <h2 style={{ color: RANK_COLORS[stats.rank] || '#A0AEC0' }}>{stats.rank}</h2>
+          <div className="rank-progress">
+            <div className="track"><div className="fill" style={{ width: '12%' }}></div></div>
+            <span>120 / 1000 XP</span>
           </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-label">⚔️ Số trận</div>
-          <div className="stat-value">{battleStats.totalBattles || 0}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-label">✅ Thắng</div>
-          <div className="stat-value win">{battleStats.wins || 0}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-label">📈 Win rate</div>
-          <div className="stat-value">{winRate}%</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-label">🔥 Streak</div>
-          <div className="stat-value streak">{battleStats.currentStreak || 0}</div>
+        <div className="stat-strip">
+          <div className="stat">
+            <div className="label"><FiCrosshair className="ic" /> Số trận</div>
+            <div className="value">{battleStats.totalBattles || 0}</div>
+          </div>
+          <div className="stat win">
+            <div className="label"><FiCheck className="ic" /> Thắng</div>
+            <div className="value">{battleStats.wins || 0}</div>
+          </div>
+          <div className="stat rate">
+            <div className="label"><FiTrendingUp className="ic" /> Win rate</div>
+            <div className="value">{winRate}%</div>
+          </div>
+          <div className="stat streak">
+            <div className="label"><FiZap className="ic" /> Streak</div>
+            <div className="value">{battleStats.currentStreak || 0}</div>
+          </div>
         </div>
       </div>
 
-      {/* ── Main Actions ── */}
-      <div className="battle-actions">
-        <button className="battle-btn quick-match" onClick={() => navigate('/battle/queue')}>
-          <FiZap className="btn-icon" />
-          <div className="btn-content">
-            <span className="btn-title">Đấu Ngay</span>
-            <span className="btn-desc">Tìm đối thủ ngẫu nhiên</span>
+      {/* ── Main Actions (Action Zone) ── */}
+      <div className="action-zone" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginTop: '80px', marginBottom: '80px' }}>
+        <div className="card card-quick" role="button" tabIndex="0" onClick={() => navigate('/battle/queue')}>
+          <div className="photo-layer"></div>
+          <div className="scrim"></div>
+          <div className="content">
+            <div className="radar">
+              <div className="ring r1"></div>
+              <div className="ring r2"></div>
+              <div className="sweep"></div>
+              <div className="core"><FiZap className="ic" /></div>
+            </div>
+            <div className="copy">
+              <div className="eyebrow">Ghép trận nhanh</div>
+              <h3>Đấu Ngay</h3>
+              <p>Tìm đối thủ ngẫu nhiên, cân bằng theo hạng của bạn</p>
+            </div>
+            <div className="go"><FiChevronRight className="ic" /></div>
           </div>
-        </button>
+        </div>
 
-        <div className="challenge-section">
-          <div className="challenge-input-row">
-            <FiUserPlus className="input-icon" />
-            <input
-              type="text"
-              className="challenge-input"
-              placeholder="Nhập tên đối thủ..."
-              value={challengeUsername}
-              onChange={(e) => setChallengeUsername(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleChallenge()}
-            />
+        <div className="card card-challenge">
+          <div className="eyebrow">Thách đấu trực tiếp</div>
+          <h3 style={{ textShadow: '0 0 10px #FF6B6B, 0 0 20px #FF6B6B', color: '#FF6B6B' }}>Thách Đấu</h3>
+          <p>Gửi lời mời đến một lập trình viên cụ thể</p>
+          <div className="challenge-form">
+            <div className="input-wrap">
+              <FiUserPlus className="ic" />
+              <input
+                type="text"
+                placeholder="Nhập tên đối thủ..."
+                value={challengeUsername}
+                onChange={(e) => setChallengeUsername(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleChallenge()}
+              />
+            </div>
             <button
-              className="challenge-btn"
               onClick={handleChallenge}
               disabled={challengeLoading || !challengeUsername.trim()}
             >
-              {challengeLoading ? '...' : <FiSend />} Thách Đấu
+              {challengeLoading ? '...' : <><FiSend className="ic" /> Thách Đấu</>}
             </button>
           </div>
 
@@ -152,17 +169,11 @@ const BattleHub = () => {
                 <div className="challenge-player">
                   <Avatar username={challengeResult.me.username} />
                   <span className="challenge-name">{challengeResult.me.username}</span>
-                  <span className="challenge-rank" style={{ color: RANK_COLORS[challengeResult.me.rank] }}>
-                    {challengeResult.me.rank}
-                  </span>
                 </div>
                 <span className="challenge-vs">⚔️ VS</span>
                 <div className="challenge-player">
                   <Avatar username={challengeResult.opponent.username} />
                   <span className="challenge-name">{challengeResult.opponent.username}</span>
-                  <span className="challenge-rank" style={{ color: RANK_COLORS[challengeResult.opponent.rank] }}>
-                    {challengeResult.opponent.rank}
-                  </span>
                 </div>
               </div>
               <p className="challenge-hint">Đã tìm thấy! Lời mời đã được gửi đi.</p>
@@ -173,55 +184,47 @@ const BattleHub = () => {
       </div>
 
       {/* ── History ── */}
-      <div className="battle-history">
-        <h3>
-          <FiClock className="section-icon" /> Lịch Sử Battle
+      <div className="history">
+        <div className="history-head">
+          <h3><FiClock className="ic" /> Lịch Sử Battle</h3>
           {history.length > 0 && (
-            <button className="view-all-btn" onClick={() => navigate('/battle')}>
+            <button className="demo-toggle" onClick={() => navigate('/battle')}>
               Xem tất cả <FiChevronRight />
             </button>
           )}
-        </h3>
+        </div>
 
         {loading ? (
           <div className="loading-spinner">Đang tải...</div>
         ) : history.length === 0 ? (
-          <div className="empty-state">
-            <FiCrosshair className="empty-icon" />
-            <p>Chưa có trận battle nào</p>
-            <p className="empty-hint">Hãy tham gia đấu ngay để bắt đầu!</p>
+          <div id="emptyState" className="empty-state">
+            <div className="empty-radar">
+              <div className="ring d1"></div>
+              <div className="ring d2"></div>
+              <div className="ring d3"></div>
+              <FiCrosshair className="ic" />
+            </div>
+            <h4>Chưa có trận battle nào</h4>
+            <p>Hãy tham gia đấu ngay để bắt đầu hành trình của bạn tại Đấu Trường</p>
           </div>
         ) : (
-          <div className="history-list">
-            {history.map((item) => (
-              <div
-                key={item.id}
-                className={`history-item ${item.result}`}
-                onClick={() => navigate(`/battle/${item.roomId}`)}
-              >
-                <div className="history-opponent">
-                  <Avatar username={item.opponent.username} />
-                  <div>
-                    <span className="history-name">{item.opponent.username}</span>
-                    <span className="history-rank" style={{ color: RANK_COLORS[item.opponent.rank] }}>
-                      {item.opponent.rank}
-                    </span>
+          <div id="matchList" className="match-list">
+            {history.map((item) => {
+              const tagClass = item.result === 'win' ? 'win' : item.result === 'lose' ? 'lose' : 'draw';
+              const tagText = item.result === 'win' ? 'THẮNG' : item.result === 'lose' ? 'THUA' : 'HOÀ';
+              return (
+                <div key={item.id} className="match-row" onClick={() => navigate(`/battle/${item.roomId}`)}>
+                  <div className={`match-result ${tagClass}`}></div>
+                  <div className="match-opp">
+                    <div className="name">{item.opponent.username}</div>
+                    <div className="meta">{item.opponent.rank} · {item.problem.difficulty}</div>
                   </div>
+                  <div className="match-score">{item.myScore} — {item.opponentScore}</div>
+                  <div className={`match-tag ${tagClass}`}>{tagText}</div>
+                  <div className="match-time">{item.problem.contestId}{item.problem.index}</div>
                 </div>
-                <div className="history-problem">
-                  <span className="problem-id">{item.problem.contestId}{item.problem.index}</span>
-                  <span className={`problem-diff ${item.problem.difficulty?.toLowerCase()}`}>
-                    {item.problem.difficulty}
-                  </span>
-                </div>
-                <div className="history-scores">
-                  <span className="my-score">+{item.myScore}</span>
-                  <span className="score-sep">-</span>
-                  <span className="opp-score">+{item.opponentScore}</span>
-                </div>
-                {renderResultBadge(item.result)}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -230,3 +233,22 @@ const BattleHub = () => {
 };
 
 export default BattleHub;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
