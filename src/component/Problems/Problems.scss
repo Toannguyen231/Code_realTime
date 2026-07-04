@@ -790,7 +790,48 @@
       margin: 12px 0;
     }
     center { text-align: left; }
-  }
+  
+    .input-specification,
+    .output-specification {
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid var(--accent-blue);
+      border-radius: 6px;
+
+      .section-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent-blue);
+        margin-bottom: 10px;
+      }
+    }
+
+    .output-specification {
+      border-left-color: var(--accent);
+
+      .section-title {
+        color: var(--accent);
+      }
+    }
+
+    .sample-tests {
+      margin-top: 24px;
+
+      .section-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-primary);
+        margin-bottom: 14px;
+      }
+    }
+}
 }
 
 /* ── RIGHT: Editor + IO panel ── */
