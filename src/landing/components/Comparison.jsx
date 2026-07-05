@@ -1,3 +1,5 @@
+﻿import { useRef, useEffect, useState } from 'react';
+
 const ROWS = [
   ['Đồng bộ real-time', '✓', '✓', '✓', '✓'],
   ['Chạy nhiều ngôn ngữ', '✓', '✕', '✓', '✓'],
@@ -19,6 +21,25 @@ function cellValue(val) {
 }
 
 export default function Comparison() {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <section className="section" id="compare">
       <div className="wrap">
@@ -27,7 +48,7 @@ export default function Comparison() {
           <h2>Codexa đứng ở đâu?</h2>
           <p>So với các công cụ cộng tác và luyện tập phổ biến khác.</p>
         </div>
-        <div className="cmp-wrap reveal">
+        <div className="cmp-wrap" ref={ref} style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(20px)', transition: 'opacity 0.6s ease, transform 0.6s var(--ease-out-expo)' }}>
           <table className="cmp">
             <thead>
               <tr>
@@ -38,7 +59,14 @@ export default function Comparison() {
             </thead>
             <tbody>
               {ROWS.map((row, ri) => (
-                <tr key={ri}>
+                <tr
+                  key={ri}
+                  style={{
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? 'translateX(0)' : 'translateX(-10px)',
+                    transition: `opacity 0.4s ease ${ri * 60}ms, transform 0.4s var(--ease-out-expo) ${ri * 60}ms`,
+                  }}
+                >
                   {row.map((val, ci) => (
                     <td key={ci} className={ci === 1 ? 'hl' : ''}>{cellValue(val)}</td>
                   ))}

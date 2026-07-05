@@ -1,4 +1,4 @@
-import API from '../../api';
+﻿import API from '../../api';
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export const DIFFICULTIES = ['All', 'Easy', 'Medium', 'Hard', 'Expert'];
@@ -25,7 +25,7 @@ export const getProblemRoomPath = (problem) => (
   `/room/${encodeURIComponent(getProblemRoomId(problem))}?problem=${encodeURIComponent(problem.id)}`
 );
 
-// ── localStorage fallback (for unauthenticated users) ────────────────
+// â”€â”€ localStorage fallback (for unauthenticated users) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const readProblemStatuses = () => {
   try {
     return JSON.parse(localStorage.getItem('coderoom.problemStatuses') || '{}');
@@ -40,24 +40,24 @@ export const writeProblemStatus = (problemId, status) => {
   localStorage.setItem('coderoom.problemStatuses', JSON.stringify(current));
 };
 
-// ── DB-backed progress (for authenticated users) ─────────────────────
+// â”€â”€ DB-backed progress (for authenticated users) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const fetchProblemStatuses = async (token) => {
-  // Nếu chưa đăng nhập → dùng localStorage (guest mode)
+  // Náº¿u chÆ°a Ä‘Äƒng nháº­p â†’ dÃ¹ng localStorage (guest mode)
   if (!token) return readProblemStatuses();
-  // Đã đăng nhập → luôn lấy từ DB, KHÔNG fallback về localStorage
-  // (tránh hiển thị trạng thái cũ của user khác / guest)
+  // ÄÃ£ Ä‘Äƒng nháº­p â†’ luÃ´n láº¥y tá»« DB, KHÃ”NG fallback vá» localStorage
+  // (trÃ¡nh hiá»ƒn thá»‹ tráº¡ng thÃ¡i cÅ© cá»§a user khÃ¡c / guest)
   try {
     const { data } = await API.get('problems/me/statuses');
     return data.statuses || {};
   } catch {
-    return {}; // Network lỗi → trả về rỗng, không hiển thị sai
+    return {}; // Network lá»—i â†’ tráº£ vá» rá»—ng, khÃ´ng hiá»ƒn thá»‹ sai
   }
 };
 
 export const getStatusIcon = (status) => {
-  if (status === 'solved') return '✓';
+  if (status === 'solved') return 'âœ“';
   if (status === 'attempted') return '~';
-  return '·';
+  return 'Â·';
 };
 
 export const buildProblemUrl = (problem) => (
@@ -94,10 +94,11 @@ export const extractSamples = (html) => {
  * Verdict display config
  */
 export const VERDICT_CONFIG = {
-  AC: { label: 'Accepted', icon: '✅', color: '#10b981', className: 'verdict-ac' },
-  WA: { label: 'Wrong Answer', icon: '❌', color: '#ef4444', className: 'verdict-wa' },
-  CE: { label: 'Compile Error', icon: '⚠️', color: '#f59e0b', className: 'verdict-ce' },
-  RE: { label: 'Runtime Error', icon: '💥', color: '#a855f7', className: 'verdict-re' },
-  TLE: { label: 'Time Limit Exceeded', icon: '⏰', color: '#eab308', className: 'verdict-tle' },
+  AC: { label: 'Accepted', icon: 'âœ…', color: '#34d399', className: 'verdict-ac' },
+  WA: { label: 'Wrong Answer', icon: 'âŒ', color: '#ef4444', className: 'verdict-wa' },
+  CE: { label: 'Compile Error', icon: 'âš ï¸', color: '#f59e0b', className: 'verdict-ce' },
+  RE: { label: 'Runtime Error', icon: 'ðŸ’¥', color: '#a855f7', className: 'verdict-re' },
+  TLE: { label: 'Time Limit Exceeded', icon: 'â°', color: '#eab308', className: 'verdict-tle' },
 };
+
 

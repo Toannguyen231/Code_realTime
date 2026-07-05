@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import './StreakIndicator.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
@@ -6,12 +6,6 @@ const getToken = () => localStorage.getItem('token') || '';
 
 const StreakIndicator = ({ compact = false }) => {
   const [streak, setStreak] = useState(null);
-
-  useEffect(() => {
-    fetchStreak();
-    const interval = setInterval(fetchStreak, 120000); // refresh mỗi 2p
-    return () => clearInterval(interval);
-  }, []);
 
   const fetchStreak = async () => {
     try {
@@ -23,6 +17,12 @@ const StreakIndicator = ({ compact = false }) => {
       if (json.success) setStreak(json);
     } catch { /* ignore */ }
   };
+
+  useEffect(() => {
+    fetchStreak();
+    const interval = setInterval(fetchStreak, 120000); // refresh m?i 2p
+    return () => clearInterval(interval);
+  }, []);
 
   if (!streak || streak.currentStreak === 0) return null;
 
@@ -57,3 +57,4 @@ const StreakIndicator = ({ compact = false }) => {
 };
 
 export default StreakIndicator;
+

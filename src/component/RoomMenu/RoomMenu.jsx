@@ -1,26 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   FiPlus, FiSearch, FiLogOut, FiRefreshCw, FiUsers, FiClock,
-  FiCode, FiArrowRight, FiX, FiHash, FiLock, FiUnlock, FiEye, FiEyeOff, FiUser, FiSettings, FiCrosshair
+  FiCode, FiArrowRight, FiX, FiHash, FiLock, FiEye, FiEyeOff, FiUser, FiSettings, FiCrosshair
 } from 'react-icons/fi';
 import Avatar from '../Avatar/Avatar.jsx';
 import '../Avatar/Avatar.scss';
 import './RoomMenu.scss';
 import DailyChallengeCard from '../Daily/DailyChallengeCard.jsx';
 import '../Daily/DailyChallengeCard.scss';
-import StreakIndicator from '../Daily/StreakIndicator.jsx';
-import '../Daily/StreakIndicator.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-const CODEXA_LOGO = '/codexa-logo-transparent.png';
 
 const timeAgo = (dateStr) => {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
   if (diff < 60) return 'vừa xong';
-  if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)} ngày trước`;
+  if (diff < 3600) return Math.floor(diff / 60) + ' phút trước';
+  if (diff < 86400) return Math.floor(diff / 3600) + ' giờ trước';
+  if (diff < 604800) return Math.floor(diff / 86400) + ' ngày trước';
   return new Date(dateStr).toLocaleDateString('vi-VN');
 };
 
@@ -38,6 +35,7 @@ const RoomMenu = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [creating, setCreating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [onlineCount, setOnlineCount] = useState(0);
 
   // Password prompt modal
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -48,28 +46,31 @@ const RoomMenu = () => {
   const [passwordError, setPasswordError] = useState('');
   const [verifying, setVerifying] = useState(false);
 
-  // Lấy thông tin user + token từ localStorage
+  // Lay thong tin user + token tu localStorage
   const token = localStorage.getItem('token') || '';
   const currentUser = (() => {
     try { return JSON.parse(localStorage.getItem('user')) || {}; }
     catch { return {}; }
   })();
 
-  // Nếu chưa login → redirect về trang login
+  // Neu chua login -> redirect ve trang login
   useEffect(() => {
-    if (!token) navigate('/');
+    if (!token) navigate('/login');
   }, [token, navigate]);
 
-  // ── Fetch danh sách phòng ──────────────────────────────────────
+  // Fetch danh sach phong
   const fetchRooms = useCallback(async (searchTerm = '') => {
     try {
-      const query = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
-      const res = await fetch(`${API_URL}/rooms/all${query}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const query = searchTerm ? '?search=' + encodeURIComponent(searchTerm) : '';
+      const res = await fetch(API_URL + '/rooms/all' + query, {
+        headers: { Authorization: 'Bearer ' + token },
       });
       if (!res.ok) throw new Error('Lỗi tải danh sách phòng');
       const data = await res.json();
       setRooms(data.rooms || []);
+      let users = 0;
+      (data.rooms || []).forEach(r => { users += (r.participantCount || 0); });
+      setOnlineCount(users + 1);
     } catch (err) {
       console.error('Fetch rooms error:', err);
       setRooms([]);
@@ -82,7 +83,7 @@ const RoomMenu = () => {
     fetchRooms();
   }, [fetchRooms]);
 
-  // ── Search với debounce ────────────────────────────────────────
+  // Search voi debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchRooms(search);
@@ -90,23 +91,23 @@ const RoomMenu = () => {
     return () => clearTimeout(timer);
   }, [search, fetchRooms]);
 
-  // ── Refresh ────────────────────────────────────────────────────
+  // Refresh
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchRooms(search);
     setTimeout(() => setRefreshing(false), 600);
   };
 
-  // ── Tạo phòng mới ─────────────────────────────────────────────
+  // Tạo phòng mới
   const handleCreate = async () => {
     if (creating) return;
     setCreating(true);
     try {
-      const res = await fetch(`${API_URL}/rooms`, {
+      const res = await fetch(API_URL + '/rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({
           name: newRoomName.trim() || 'Untitled Room',
@@ -115,7 +116,7 @@ const RoomMenu = () => {
       });
       const data = await res.json();
       if (data.room) {
-        navigate(`/room/${data.room.roomId}`);
+        navigate('/room/' + data.room.roomId);
       }
     } catch (err) {
       console.error('Create room error:', err);
@@ -124,29 +125,27 @@ const RoomMenu = () => {
     }
   };
 
-  // ── Join phòng (kiểm tra password nếu cần) ────────────────────
+  // Join phong (kiem tra password neu can)
   const handleJoinRoom = async (roomId, roomName, isPrivate) => {
     if (!isPrivate) {
-      navigate(`/room/${roomId}`);
+      navigate('/room/' + roomId);
       return;
     }
-    // Nếu phòng private → kiểm tra user đã là participant chưa
     try {
-      const res = await fetch(`${API_URL}/rooms/${roomId}/verify-password`, {
+      const res = await fetch(API_URL + '/rooms/' + roomId + '/verify-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({ password: '' }),
       });
       const data = await res.json();
       if (data.verified) {
-        navigate(`/room/${roomId}`);
+        navigate('/room/' + roomId);
         return;
       }
-    } catch { /* ignore */ }
-    // Hiện modal nhập password
+    } catch { }
     setPendingRoomId(roomId);
     setPendingRoomName(roomName || roomId);
     setRoomPassword('');
@@ -154,24 +153,23 @@ const RoomMenu = () => {
     setShowPasswordModal(true);
   };
 
-  // ── Xác minh password & join ───────────────────────────────────
   const handleVerifyAndJoin = async () => {
     if (verifying) return;
     setVerifying(true);
     setPasswordError('');
     try {
-      const res = await fetch(`${API_URL}/rooms/${pendingRoomId}/verify-password`, {
+      const res = await fetch(API_URL + '/rooms/' + pendingRoomId + '/verify-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({ password: roomPassword }),
       });
       const data = await res.json();
       if (data.verified) {
         setShowPasswordModal(false);
-        navigate(`/room/${pendingRoomId}`);
+        navigate('/room/' + pendingRoomId);
       } else {
         setPasswordError(data.message || 'Mật khẩu sai.');
       }
@@ -182,27 +180,24 @@ const RoomMenu = () => {
     }
   };
 
-  // ── Join phòng bằng ID ────────────────────────────────────────
   const handleJoinById = async () => {
     const id = joinId.trim();
     if (!id) return;
-    // Kiểm tra xem phòng có password không
     try {
-      const res = await fetch(`${API_URL}/rooms/${id}/verify-password`, {
+      const res = await fetch(API_URL + '/rooms/' + id + '/verify-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify({ password: '' }),
       });
       const data = await res.json();
       if (data.verified) {
-        navigate(`/room/${id}`);
+        navigate('/room/' + id);
         return;
       }
-    } catch { /* phòng không tồn tại hoặc cần password */ }
-    // Hiện password modal
+    } catch { }
     setPendingRoomId(id);
     setPendingRoomName(id);
     setRoomPassword('');
@@ -210,207 +205,172 @@ const RoomMenu = () => {
     setShowPasswordModal(true);
   };
 
-  // ── Logout ─────────────────────────────────────────────────────
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('coderoom.problemStatuses'); // xóa cache trạng thái bài khi đăng xuất
+    localStorage.removeItem('coderoom.problemStatuses');
     navigate('/');
   };
 
   return (
-    <div className="room-menu">
-      {/* ── Header ── */}
-      <header className="rm-header">
-        <div className="rm-header-left">
-          <div className="rm-logo">
-            <div className="rm-logo-icon">
-              <img src={CODEXA_LOGO} alt="Codexa logo" />
+    <div className="rm-layout">
+      {/* NAV */}
+      <nav className="rm-nav">
+        <div className="rm-wrap rm-nav-inner">
+          <div className="rm-brand" onClick={() => navigate('/')}>
+            <div className="rm-brand-mark">&lt;/&gt;</div>
+            <div className="rm-brand-text"><b>Codexa</b><span>INSTANT CODE. BOUNDLESS DATA.</span></div>
+          </div>
+          <div className="rm-nav-links">
+            {currentUser.role === 'admin' && (
+              <Link to="/admin">
+                <FiSettings /> Admin Panel
+              </Link>
+            )}
+            <Link to="/battle" className="rm-battle">
+              <FiCrosshair /> Battle
+            </Link>
+            <Link to="/problems">
+              <FiCode /> Problems
+            </Link>
+          </div>
+          <div className="rm-nav-right">
+            <div className="rm-avatar-chip" onClick={() => navigate('/profile')}>
+              <div className="rm-dot">{getInitials(currentUser.username)}</div>
+              {currentUser.username || 'User'}
             </div>
-            <div className="rm-logo-copy">
-              <span>Codexa</span>
-              <small>Instant Code. Boundless Data.</small>
-            </div>
+            <button className="rm-icon-btn" onClick={handleLogout} title="Đăng xuất">
+              <FiLogOut />
+            </button>
           </div>
         </div>
+      </nav>
 
-        <div className="rm-header-right">
-          <button
-            type="button"
-            className="rm-user-info"
-            onClick={() => navigate('/profile')}
-            title="Xem profile"
-          >
-            <Avatar user={currentUser} size="sm" />
-            <span className="rm-user-name">{currentUser.username || 'User'}</span>
-          </button>
-          <StreakIndicator />
-          {currentUser.role === 'admin' && (
-            <button className="rm-btn-profile rm-btn-admin" onClick={() => navigate('/admin')} style={{ border: '1px solid #c084fc', color: '#c084fc' }}>
-              <FiSettings size={13} /> Admin Panel
-            </button>
-          )}
-          <button className="rm-btn-profile rm-btn-battle" onClick={() => navigate('/battle')}>
-            <FiCrosshair size={13} /> Battle
-          </button>
-          <button className="rm-btn-profile" onClick={() => navigate('/problems')}>
-            <FiCode size={13} /> Problems
-          </button>
-          <button className="rm-btn-profile" onClick={() => navigate('/profile')}>
-            <FiUser size={13} /> Profile
-          </button>
-          <button className="rm-btn-logout" onClick={handleLogout}>
-            <FiLogOut size={13} /> Logout
-          </button>
+      {/* HERO */}
+      <header className="rm-hero">
+        <div className="rm-wrap rm-hero-grid">
+          <div>
+            <div className="rm-eyebrow"><span className="rm-pulse"></span>{rooms.length} phòng đang hoạt động ngay bây giờ</div>
+            <h1 className="rm-hero-title">Code cùng nhau,<br/><span className="rm-grad">theo thời gian thực.</span></h1>
+            <p className="rm-hero-sub">Vào phòng có sẵn hoặc tạo phòng mới để lập trình real-time cùng bạn bè, hoặc bước vào Battle Arena để đối đầu 1v1 và leo hạng.</p>
+            <div className="rm-hero-ctas">
+              <button className="rm-btn rm-btn-primary" onClick={() => setShowCreate(true)}>
+                <FiPlus /> Tạo phòng mới
+              </button>
+              <button className="rm-btn rm-btn-ghost" onClick={() => navigate('/battle')}>
+                <FiCrosshair /> Vào Battle Arena
+              </button>
+            </div>
+            <div className="rm-hero-stats">
+              <div><b>{rooms.length}</b><span>Phòng hiện có</span></div>
+              <div><b>{onlineCount}</b><span>Người đang online</span></div>
+              <div><b>Sat &#8594; Boss</b><span>9 bậc xếp hạng</span></div>
+            </div>
+          </div>
+
+          <div className="rm-battle-visual">
+            <div className="rm-term rm-term-a">
+              <div className="rm-term-head"><span></span><span></span><span></span><div className="rm-term-tag">PLAYER 1</div></div>
+              <div className="rm-term-body">
+                <span className="c4">1</span>  <span className="c1">function</span> solve(arr) &#123;<br/>
+                <span className="c4">2</span>    <span className="c1">let</span> sum = <span className="c3">0</span>;<br/>
+                <span className="c4">3</span>    <span className="c1">for</span> (x <span className="c1">of</span> arr)<br/>
+                <span className="c4">4</span>      sum += x;<br/>
+                <span className="c4">5</span>    <span className="c1">return</span> sum;<span className="cursor"></span><br/>
+                <span className="c4">6</span>  &#125;
+              </div>
+            </div>
+            <div className="rm-term rm-term-b">
+              <div className="rm-term-head"><span></span><span></span><span></span><div className="rm-term-tag">PLAYER 2</div></div>
+              <div className="rm-term-body">
+                <span className="c4">1</span>  <span className="c1">int</span> solve(<span className="c1">vector&lt;int&gt;</span>&amp; v) &#123;<br/>
+                <span className="c4">2</span>    <span className="c1">int</span> s = <span className="c3">0</span>;<br/>
+                <span className="c4">3</span>    <span className="c1">for</span> (<span className="c1">auto</span> x : v)<br/>
+                <span className="c4">4</span>      s += x;<br/>
+                <span className="c4">5</span>    <span className="c2">return</span> s;<span className="cursor"></span><br/>
+                <span className="c4">6</span>  &#125;
+              </div>
+            </div>
+            <div className="rm-vs-badge">VS</div>
+          </div>
         </div>
       </header>
 
-      {/* ── Content ── */}
-      <div className="rm-content">
-        {/* Hero */}
-        <div className="rm-hero">
-          <h1>Codexa</h1>
-          <div className="rm-hero-slogan">Instant Code. Boundless Data.</div>
-          <p>Tham gia phòng có sẵn hoặc tạo phòng mới để cùng nhau lập trình real-time</p>
-        </div>
+      {/* MAIN */}
+      <main className="rm-wrap rm-main">
+        <div className="rm-panel"><div className="rm-panel-inner">
+          <DailyChallengeCard />
+        </div></div>
 
-        {/* Daily Challenge */}
-        <DailyChallengeCard />
-
-        {/* Action Bar */}
-        <div className="rm-actions">
-          <div className="rm-search-wrap">
-            <FiSearch size={14} className="rm-search-icon" />
-            <input
-              className="rm-search"
-              placeholder="Tìm kiếm phòng theo tên hoặc Room ID..."
+        <div className="rm-room-tools">
+          <div className="rm-field" style={{ flex: 1 }}>
+            <FiSearch />
+            <input 
+              placeholder="Tìm kiếm phòng theo tên hoặc Room ID…" 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-
-          <div className="rm-join-wrap">
-            <input
-              className="rm-join-input"
-              placeholder="Room ID"
+          <div className="rm-field rm-field-room-id">
+            <input 
+              placeholder="Room ID" 
               value={joinId}
               onChange={(e) => setJoinId(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === 'Enter' && handleJoinById()}
               maxLength={12}
             />
-            <button
-              className="rm-btn-join"
-              onClick={handleJoinById}
-              disabled={!joinId.trim()}
-            >
-              <FiArrowRight size={14} /> Join
-            </button>
           </div>
+          <button className="rm-btn rm-btn-ghost" onClick={handleJoinById} disabled={!joinId.trim()}>Join &#8594;</button>
+        </div>
 
-          <button className="rm-btn-create" onClick={() => setShowCreate(true)}>
-            <FiPlus size={15} /> Tạo phòng mới
+        <div className="rm-section-head">
+          <h4><b>{rooms.length}</b> phong {search ? 'tìm thấy' : 'hiện có'}</h4>
+          <button className={'rm-refresh-btn ' + (refreshing ? 'spinning' : '')} onClick={handleRefresh}>
+            <FiRefreshCw /> Refresh
           </button>
         </div>
 
-        {/* Stats */}
-        {!loading && (
-          <div className="rm-stats">
-            <span className="rm-stats-count">
-              <span>{rooms.length}</span> phòng {search ? 'tìm thấy' : 'hiện có'}
-            </span>
-            <button
-              className={`rm-stats-refresh ${refreshing ? 'spinning' : ''}`}
-              onClick={handleRefresh}
-            >
-              <FiRefreshCw size={12} /> Refresh
-            </button>
-          </div>
-        )}
-
-        {/* Room Grid */}
         {loading ? (
-          <div className="rm-loading">
-            <div className="rm-loading-spinner" />
-            <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>Đang tải danh sách phòng...</span>
-          </div>
+          <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-dim)' }}>Đang tải danh sách phòng...</div>
         ) : rooms.length === 0 ? (
-          <div className="rm-empty">
-            <div className="rm-empty-icon">📭</div>
-            <h3>{search ? 'Không tìm thấy phòng nào' : 'Chưa có phòng nào'}</h3>
-            <p>{search ? 'Thử tìm kiếm với từ khóa khác' : 'Hãy tạo phòng mới để bắt đầu!'}</p>
+          <div style={{ padding: '60px', textAlign: 'center', color: 'var(--text-faint)' }}>
+            <div style={{ fontSize: '40px', marginBottom: '10px' }}>&#128701;</div>
+            <h4>{search ? 'Khong tìm thấy phong nao' : 'Chưa có phòng nào hoạt động'}</h4>
           </div>
         ) : (
-          <div className="rm-grid">
+          <div className="rm-rooms">
             {rooms.map((room) => (
-              <div
-                key={room.roomId || room._id}
-                className={`rm-card ${room.isPrivate ? 'rm-card-private' : ''}`}
+              <div 
+                key={room.roomId} 
+                className={'rm-room-card ' + (room.isPrivate ? 'is-private' : '')}
                 onClick={() => handleJoinRoom(room.roomId, room.name, room.isPrivate)}
               >
-                <div className="rm-card-top">
-                  <div className="rm-card-info">
-                    <div className="rm-card-name">
-                      {room.isPrivate && <FiLock size={12} className="rm-lock-icon" />}
-                      {room.name || 'Untitled Room'}
-                    </div>
-                    <div className="rm-card-id">
-                      <FiHash size={10} />
-                      {room.roomId}
-                    </div>
-                  </div>
-                  <span className="rm-card-lang">{room.language || 'C++'}</span>
+                <div className="rm-room-top">
+                  <h5>{room.name || 'Untitled Room'}</h5>
+                  <span className="rm-lang-tag">{room.language || 'C++'}</span>
                 </div>
-
-                <div className="rm-card-meta">
-                  <span className="rm-card-meta-item">
-                    <FiUsers size={12} />
-                    {room.participantCount || 0} thành viên
-                  </span>
-                  <span className="rm-card-meta-item">
-                    <FiClock size={12} />
-                    {timeAgo(room.updatedAt)}
-                  </span>
-                  {room.isPrivate && (
-                    <span className="rm-card-meta-item rm-private-badge">
-                      <FiLock size={10} /> Private
-                    </span>
-                  )}
+                <div className="rm-room-id"># {room.roomId}</div>
+                <div className="rm-room-meta">
+                  <span><FiUsers /> {room.participantCount || 0} thành viên</span>
+                  <span><FiClock /> {timeAgo(room.updatedAt)}</span>
                 </div>
-
-                <div className="rm-card-bottom">
-                  <div className="rm-card-creator">
-                    <div className="rm-card-creator-avatar">
-                      {getInitials(room.creatorName)}
-                    </div>
-                    <span>{room.creatorName || 'Unknown'}</span>
-                  </div>
-                  <button
-                    className="rm-btn-card-join"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleJoinRoom(room.roomId, room.name, room.isPrivate);
-                    }}
-                  >
-                    <FiCode size={12} /> Join
-                  </button>
+                <div className="rm-room-join">
+                  {room.isPrivate ? <><FiLock style={{marginRight: '6px', verticalAlign: '-2px'}}/> Join Private Room</> : 'Vào phòng'}
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </main>
 
-      {/* ── Create Room Modal ── */}
+      {/* Create Room Modal */}
       {showCreate && (
         <div className="rm-modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowCreate(false)}>
           <div className="rm-modal">
             <div className="rm-modal-header">
-              <h3><FiPlus size={16} /> Tạo phòng mới</h3>
-              <button className="rm-modal-close" onClick={() => setShowCreate(false)}>
-                <FiX size={16} />
-              </button>
+              <h3><FiPlus /> Tạo phòng mới</h3>
+              <button className="rm-modal-close" onClick={() => setShowCreate(false)}><FiX size={20} /></button>
             </div>
-
             <div className="rm-modal-body">
               <div className="rm-modal-field">
                 <label>Tên phòng</label>
@@ -424,96 +384,64 @@ const RoomMenu = () => {
                   autoFocus
                 />
               </div>
-
               <div className="rm-modal-field">
-                <label>
-                  <FiLock size={12} style={{ marginRight: 4 }} />
-                  Mật khẩu phòng <span className="rm-optional">(tùy chọn)</span>
-                </label>
+                <label>Mật khẩu phòng <span style={{color: 'var(--text-faint)', fontWeight: 'normal'}}>(tùy chọn)</span></label>
                 <div className="rm-password-wrap">
                   <input
                     type={showNewPassword ? 'text' : 'password'}
-                    placeholder="Để trống nếu phòng public"
+                    placeholder="Để trống nếu public"
                     value={newRoomPassword}
                     onChange={(e) => setNewRoomPassword(e.target.value)}
                     maxLength={30}
                   />
-                  <button
-                    type="button"
-                    className="rm-password-toggle"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                  >
-                    {showNewPassword ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+                  <button type="button" className="rm-password-toggle" onClick={() => setShowNewPassword(!showNewPassword)}>
+                    {showNewPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                   </button>
                 </div>
-                {newRoomPassword && (
-                  <span className="rm-password-hint">
-                    <FiLock size={10} /> Phòng sẽ yêu cầu mật khẩu để tham gia
-                  </span>
-                )}
+                {newRoomPassword && <span className="rm-password-hint"><FiLock /> Phòng sẽ yêu cầu mật khẩu để 🔓 Tham gia</span>}
               </div>
-
               <div className="rm-modal-actions">
-                <button className="rm-modal-btn-cancel" onClick={() => { setShowCreate(false); setNewRoomPassword(''); }}>
-                  Hủy
-                </button>
-                <button
-                  className="rm-modal-btn-create"
-                  onClick={handleCreate}
-                  disabled={creating}
-                >
-                  {creating ? 'Đang tạo...' : (newRoomPassword ? '🔒 Tạo phòng Private' : 'Tạo phòng')}
+                <button className="rm-modal-btn-cancel" onClick={() => setShowCreate(false)}>Hủy</button>
+                <button className="rm-modal-btn-create" onClick={handleCreate} disabled={creating}>
+                  {creating ? 'Đang tạo...' : (newRoomPassword ? 'Tạo phòng Private' : 'Tạo phòng')}
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
-      {/* ── Password Prompt Modal ── */}
+
+      {/* Password Prompt Modal */}
       {showPasswordModal && (
         <div className="rm-modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowPasswordModal(false)}>
-          <div className="rm-modal rm-modal-password">
+          <div className="rm-modal">
             <div className="rm-modal-header">
-              <h3><FiLock size={16} /> Phòng yêu cầu mật khẩu</h3>
-              <button className="rm-modal-close" onClick={() => setShowPasswordModal(false)}>
-                <FiX size={16} />
-              </button>
+              <h3><FiLock /> Yêu cầu mật khẩu</h3>
+              <button className="rm-modal-close" onClick={() => setShowPasswordModal(false)}><FiX size={20} /></button>
             </div>
             <div className="rm-modal-body">
-              <p className="rm-password-room-name">
-                Nhập mật khẩu để tham gia phòng <strong>{pendingRoomName}</strong>
-              </p>
+              <p className="rm-password-room-name">Nhập mật khẩu để 🔓 Tham gia phòng <strong>{pendingRoomName}</strong></p>
               <div className="rm-modal-field">
                 <label>Mật khẩu</label>
                 <div className="rm-password-wrap">
                   <input
                     type={showRoomPassword ? 'text' : 'password'}
-                    placeholder="Nhập mật khẩu phòng..."
+                    placeholder="Nhap Mật khẩu..."
                     value={roomPassword}
                     onChange={(e) => { setRoomPassword(e.target.value); setPasswordError(''); }}
                     onKeyDown={(e) => e.key === 'Enter' && handleVerifyAndJoin()}
                     autoFocus
                   />
-                  <button
-                    type="button"
-                    className="rm-password-toggle"
-                    onClick={() => setShowRoomPassword(!showRoomPassword)}
-                  >
-                    {showRoomPassword ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+                  <button type="button" className="rm-password-toggle" onClick={() => setShowRoomPassword(!showRoomPassword)}>
+                    {showRoomPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                   </button>
                 </div>
                 {passwordError && <span className="rm-password-error">{passwordError}</span>}
               </div>
               <div className="rm-modal-actions">
-                <button className="rm-modal-btn-cancel" onClick={() => setShowPasswordModal(false)}>
-                  Hủy
-                </button>
-                <button
-                  className="rm-modal-btn-create"
-                  onClick={handleVerifyAndJoin}
-                  disabled={verifying || !roomPassword}
-                >
-                  {verifying ? 'Đang kiểm tra...' : '🔓 Tham gia'}
+                <button className="rm-modal-btn-cancel" onClick={() => setShowPasswordModal(false)}>Hủy</button>
+                <button className="rm-modal-btn-create" onClick={handleVerifyAndJoin} disabled={verifying || !roomPassword}>
+                  {verifying ? 'Kiểm tra...' : '🔓 Tham gia'}
                 </button>
               </div>
             </div>

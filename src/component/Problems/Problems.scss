@@ -1,8 +1,8 @@
-/* ══════════════════════════════════════════════════════════════
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Problems Stylesheets
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Problem List Page ── */
+/* â”€â”€ Problem List Page â”€â”€ */
 .problems-page {
   display: flex;
   height: 100vh;
@@ -11,7 +11,7 @@
   overflow: hidden;
 }
 
-/* ── Sidebar Filter Panel ── */
+/* â”€â”€ Sidebar Filter Panel â”€â”€ */
 .problems-sidebar {
   width: 300px;
   background: var(--bg-sidebar);
@@ -114,7 +114,7 @@
     &.active {
       background: var(--accent-dim);
       color: var(--accent);
-      border-color: rgba(16, 185, 129, 0.2);
+      border-color: rgba(52, 211, 153, 0.2);
       font-weight: 500;
     }
   }
@@ -157,7 +157,7 @@
     &:checked {
       background: var(--accent);
       border-color: var(--accent);
-      &::after { content: "✓"; color: #fff; font-size: 9px; font-weight: bold; }
+      &::after { content: "âœ“"; color: #fff; font-size: 9px; font-weight: bold; }
     }
   }
   span {
@@ -201,12 +201,12 @@
     &:checked {
       background: var(--accent);
       border-color: var(--accent);
-      &::after { content: "✓"; color: #fff; font-size: 9px; font-weight: bold; }
+      &::after { content: "âœ“"; color: #fff; font-size: 9px; font-weight: bold; }
     }
   }
 }
 
-/* ── Main Panel ── */
+/* â”€â”€ Main Panel â”€â”€ */
 .problems-main {
   flex: 1;
   display: flex;
@@ -241,8 +241,8 @@
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.15);
   border-radius: var(--radius-md);
   color: var(--accent);
   font-size: 12px;
@@ -250,8 +250,8 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   &:hover {
-    background: rgba(16, 185, 129, 0.12);
-    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(52, 211, 153, 0.12);
+    border-color: rgba(52, 211, 153, 0.3);
   }
 }
 
@@ -326,7 +326,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Problem Table ── */
+/* â”€â”€ Problem Table â”€â”€ */
 .problem-table-wrap {
   flex: 1;
   background: rgba(17, 24, 39, 0.3);
@@ -374,7 +374,7 @@
   span { color: var(--text-muted); font-size: 13px; }
 }
 
-/* ── Badges ── */
+/* â”€â”€ Badges â”€â”€ */
 .difficulty-badge {
   display: inline-flex;
   padding: 3px 8px;
@@ -382,10 +382,10 @@
   font-weight: 600;
   border-radius: var(--radius-sm);
   text-transform: capitalize;
-  &.difficulty-easy   { background: rgba(16, 185, 129, 0.08); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.15); }
+  &.difficulty-easy   { background: rgba(52, 211, 153, 0.08); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.15); }
   &.difficulty-medium { background: rgba(245, 158, 11, 0.08); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.15); }
   &.difficulty-hard   { background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.15); }
-  &.difficulty-expert  { background: rgba(139, 92, 246, 0.08); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.15); }
+  &.difficulty-expert  { background: rgba(139, 92, 246, 0.08); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.15); }
   &.difficulty-unrated { background: rgba(100, 116, 139, 0.08); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.15); }
 }
 
@@ -408,7 +408,7 @@
   text-align: center;
   font-weight: bold;
   font-size: 15px;
-  &.status-solved   { color: #10b981; }
+  &.status-solved   { color: #34d399; }
   &.status-attempted { color: #f59e0b; }
   &.status-unsolved  { color: var(--text-dim); }
 }
@@ -446,8 +446,8 @@
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.15);
   color: var(--accent);
   font-size: 12px;
   font-weight: 600;
@@ -457,7 +457,7 @@
   &:hover { background: var(--accent); color: #fff; box-shadow: var(--shadow-glow-green); }
 }
 
-/* ── Pagination ── */
+/* â”€â”€ Pagination â”€â”€ */
 .problem-pagination {
   display: flex;
   align-items: center;
@@ -484,9 +484,9 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════
-   Problem Detail Page — 2-panel layout
-   ══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   Problem Detail Page â€” 2-panel layout
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .problem-page {
   display: flex;
@@ -541,7 +541,7 @@
 
 .problem-solved-count {
   font-size: 11px;
-  color: #10b981;
+  color: #34d399;
   font-weight: 600;
 }
 
@@ -566,7 +566,7 @@
   }
 }
 
-/* ── Workspace: side-by-side layout ── */
+/* â”€â”€ Workspace: side-by-side layout â”€â”€ */
 .problem-workspace {
   flex: 1;
   display: flex;
@@ -574,7 +574,7 @@
   min-height: 0;
 }
 
-/* ── LEFT: Problem Statement Panel ── */
+/* â”€â”€ LEFT: Problem Statement Panel â”€â”€ */
 .problem-statement-panel {
   width: 50%;
   border-right: 1px solid var(--border-color);
@@ -633,14 +633,14 @@
   }
 }
 
-/* ── Scraped Content Renderer ── */
+/* â”€â”€ Scraped Content Renderer â”€â”€ */
 .problem-scraped-content {
   padding: 24px 28px;
   color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.7;
 
-  /* ── Codeforces problem-statement styling ── */
+  /* â”€â”€ Codeforces problem-statement styling â”€â”€ */
   .problem-statement {
     background: transparent !important;
     color: var(--text-secondary) !important;
@@ -704,7 +704,7 @@
 
     /* Notes */
     .note {
-      background: rgba(16, 185, 129, 0.03) !important;
+      background: rgba(52, 211, 153, 0.03) !important;
       border-left: 4px solid var(--accent) !important;
       padding: 14px 16px !important;
       border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
@@ -834,7 +834,7 @@
 }
 }
 
-/* ── RIGHT: Editor + IO panel ── */
+/* â”€â”€ RIGHT: Editor + IO panel â”€â”€ */
 .problem-right-panel {
   width: 50%;
   display: flex;
@@ -910,9 +910,9 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    I/O Panel (Custom Input / Output)
-   ══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .problem-io-panel {
   border-top: 1px solid var(--border-color);
@@ -1014,7 +1014,7 @@
   &:hover {
     background: rgba(139, 92, 246, 0.14);
     border-color: rgba(139, 92, 246, 0.3);
-    color: #a78bfa;
+    color: #c084fc;
   }
 }
 
@@ -1131,7 +1131,7 @@
 }
 
 
-/* ── Bottom Action Bar ── */
+/* â”€â”€ Bottom Action Bar â”€â”€ */
 .problem-bottom-bar {
   padding: 10px 14px;
   background: var(--bg-header);
@@ -1173,23 +1173,23 @@
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #34d399, #6ee7b7);
   border: none;
   color: #fff;
   box-shadow: var(--shadow-glow-green);
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+    box-shadow: 0 4px 20px rgba(52, 211, 153, 0.35);
   }
   &:active { transform: translateY(0); }
 }
 
 
-/* ── Loading Spinner ── */
+/* â”€â”€ Loading Spinner â”€â”€ */
 .problem-loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(16, 185, 129, 0.12);
+  border: 3px solid rgba(52, 211, 153, 0.12);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spinProblem 0.8s linear infinite;
@@ -1224,7 +1224,7 @@
   button {
     padding: 8px 16px;
     background: var(--accent-dim);
-    border: 1px solid rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(52, 211, 153, 0.15);
     color: var(--accent);
     border-radius: var(--radius-md);
     cursor: pointer;
@@ -1234,7 +1234,7 @@
   }
 }
 
-/* ── New buttons for Solo / Team solve mode ── */
+/* â”€â”€ New buttons for Solo / Team solve mode â”€â”€ */
 .solve-solo-btn {
   display: inline-flex;
   align-items: center;
@@ -1301,7 +1301,7 @@
   }
 }
 
-/* ── Collaborative Room Problem Statement Panel ── */
+/* â”€â”€ Collaborative Room Problem Statement Panel â”€â”€ */
 .room-problem-statement-panel {
   width: 450px;
   border-right: 1px solid var(--border-color);
@@ -1336,7 +1336,7 @@
   text-align: center;
 }
 
-/* ── Resizer ── */
+/* â”€â”€ Resizer â”€â”€ */
 .panel-resizer {
   width: 6px;
   background: var(--bg-primary);
@@ -1352,7 +1352,7 @@
   background: var(--accent);
 }
 
-/* ── Automated Test Cases ── */
+/* â”€â”€ Automated Test Cases â”€â”€ */
 .testcases-area {
   padding: 16px;
   display: flex;
@@ -1376,7 +1376,7 @@
 }
 
 .test-case-card.passed {
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: rgba(52, 211, 153, 0.3);
 }
 
 .test-case-card.failed,
@@ -1409,12 +1409,12 @@
   font-weight: bold;
 }
 
-.test-case-card.passed .test-case-status { color: #10b981; }
+.test-case-card.passed .test-case-status { color: #34d399; }
 .test-case-card.failed .test-case-status { color: #ef4444; }
 .test-case-card.compile-error .test-case-status { color: #f59e0b; }
 .test-case-card.runtime-error .test-case-status { color: #f59e0b; }
 .test-case-card.error .test-case-status { color: #ef4444; }
-.test-case-card.running .test-case-status { color: #3b82f6; }
+.test-case-card.running .test-case-status { color: #60a5fa; }
 
 .test-case-body {
   padding: 12px;
@@ -1467,16 +1467,16 @@
   font-size: 13px;
   font-weight: 600;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.1);
+  color: #34d399;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .run-tests-btn:hover:not(:disabled) {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: #10b981;
+  background: rgba(52, 211, 153, 0.2);
+  border-color: #34d399;
 }
 
 .run-tests-btn:disabled {
@@ -1484,7 +1484,7 @@
   cursor: not-allowed;
 }
 
-/* ── Test Summary Bar ── */
+/* â”€â”€ Test Summary Bar â”€â”€ */
 .test-summary-bar {
   display: flex;
   align-items: center;
@@ -1507,7 +1507,7 @@
 }
 
 .passed-count {
-  color: #10b981;
+  color: #34d399;
 }
 
 .failed-count {
@@ -1515,8 +1515,8 @@
 }
 
 .io-col pre.passed-text {
-  color: #10b981;
-  border-color: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.2);
 }
 
 .test-case-card.pending {
@@ -1527,7 +1527,7 @@
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* ── Verdict Summary Bar ── */
+/* â”€â”€ Verdict Summary Bar â”€â”€ */
 .verdict-summary-bar {
   display: flex;
   align-items: center;
@@ -1540,9 +1540,9 @@
   animation: slideDownVerdict 0.3s ease-out;
 
   &.verdict-ac {
-    background: rgba(16, 185, 129, 0.05);
-    border-color: rgba(16, 185, 129, 0.2);
-    border-left: 4px solid #10b981;
+    background: rgba(52, 211, 153, 0.05);
+    border-color: rgba(52, 211, 153, 0.2);
+    border-left: 4px solid #34d399;
   }
   &.verdict-wa {
     background: rgba(239, 68, 68, 0.05);
@@ -1599,13 +1599,13 @@
 }
 
 .verdict-points {
-  color: #10b981;
+  color: #34d399;
   font-weight: 700;
   font-size: 12px;
   padding: 3px 8px;
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(52, 211, 153, 0.1);
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(52, 211, 153, 0.2);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1639,8 +1639,11 @@
 }
 
 @keyframes ptsPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
-  50% { box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.2); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.2); }
+  50% { box-shadow: 0 0 8px 2px rgba(52, 211, 153, 0.2); }
 }
+
+
+
 
 

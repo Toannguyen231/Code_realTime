@@ -911,7 +911,7 @@ const AdminDashboard = () => {
                               </span>
                             </td>
                             <td>
-                              <strong style={{ color: r.onlineCount > 0 ? 'var(--accent, #10b981)' : '' }}>
+                              <strong style={{ color: r.onlineCount > 0 ? 'var(--accent, #34d399)' : '' }}>
                                 {r.onlineCount} người
                               </strong>
                             </td>
@@ -1121,5 +1121,6 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
 
 

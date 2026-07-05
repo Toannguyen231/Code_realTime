@@ -1,6 +1,6 @@
-@import '../../index.css';
+﻿@import '../../index.css';
 
-/* ── Loading ── */
+/* â”€â”€ Loading â”€â”€ */
 .battle-room-loading {
   height: 100vh;
   display: flex;
@@ -24,7 +24,7 @@
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Room ── */
+/* â”€â”€ Room â”€â”€ */
 .battle-room {
   height: 100vh;
   display: flex;
@@ -38,7 +38,7 @@
   }
 }
 
-/* ── Top Bar ── */
+/* â”€â”€ Top Bar â”€â”€ */
 .battle-topbar {
   display: flex;
   align-items: center;
@@ -139,14 +139,14 @@
   }
 }
 
-/* ── Main Content ── */
+/* â”€â”€ Main Content â”€â”€ */
 .battle-main {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* ── Problem Panel ── */
+/* â”€â”€ Problem Panel â”€â”€ */
 .battle-problem-panel {
   width: 35%;
   min-width: 280px;
@@ -180,7 +180,7 @@
   }
 }
 
-/* ── Code Panel ── */
+/* â”€â”€ Code Panel â”€â”€ */
 .battle-code-panel {
   flex: 1;
   display: flex;
@@ -223,7 +223,7 @@
 .battle-run-btn {
   background: var(--accent-dim);
   color: var(--accent);
-  &:hover:not(:disabled) { background: rgba(16, 185, 129, 0.2); }
+  &:hover:not(:disabled) { background: rgba(52, 211, 153, 0.2); }
 }
 
 .battle-submit-btn {
@@ -243,7 +243,7 @@
   min-height: 0;
 }
 
-/* ── IO Panel ── */
+/* â”€â”€ IO Panel â”€â”€ */
 .battle-io-panel {
   border-top: 1px solid var(--border-color);
   background: var(--bg-secondary);
@@ -306,7 +306,7 @@
   }
 }
 
-/* ── Submit Banner ── */
+/* â”€â”€ Submit Banner â”€â”€ */
 .submit-banner {
   display: flex;
   align-items: center;
@@ -316,11 +316,11 @@
   font-weight: 600;
   animation: slideUp 0.3s ease;
 
-  &.accepted { background: var(--accent-dim); color: var(--accent); border-top: 1px solid rgba(16, 185, 129, 0.2); }
+  &.accepted { background: var(--accent-dim); color: var(--accent); border-top: 1px solid rgba(52, 211, 153, 0.2); }
   &.failed { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-top: 1px solid rgba(239, 68, 68, 0.2); }
 }
 
-/* ── Result Overlay ── */
+/* â”€â”€ Result Overlay â”€â”€ */
 .battle-result-overlay {
   position: fixed;
   inset: 0;
@@ -425,10 +425,10 @@
   }
 }
 
-/* ── Animations ── */
+/* â”€â”€ Animations â”€â”€ */
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ── Battle Room Countdown ── */
+/* â”€â”€ Battle Room Countdown â”€â”€ */
 .battle-room-countdown {
   height: 100vh;
   display: flex;
@@ -457,7 +457,7 @@
   }
 }
 
-/* ── Testing Progress ── */
+/* â”€â”€ Testing Progress â”€â”€ */
 .battle-testing-progress {
   padding: 12px 16px;
   background: var(--bg-secondary);
@@ -492,7 +492,7 @@
   }
 }
 
-/* ── Test Results ── */
+/* â”€â”€ Test Results â”€â”€ */
 .battle-test-results {
   padding: 12px 16px;
   background: var(--bg-secondary);
@@ -524,7 +524,7 @@
     font-size: 13px;
 
     &.passed {
-      background: rgba(16, 185, 129, 0.08);
+      background: rgba(52, 211, 153, 0.08);
       color: var(--accent);
     }
 
@@ -578,10 +578,10 @@
   }
 }
 
-/* ── Opponent AC Status ── */
+/* â”€â”€ Opponent AC Status â”€â”€ */
 .opponent-status {
   &.ac {
-    background: rgba(16, 185, 129, 0.15);
+    background: rgba(52, 211, 153, 0.15);
     color: var(--accent);
   }
 }
@@ -591,3 +591,5 @@
   50% { transform: scale(1.2); }
   100% { transform: scale(1); opacity: 1; }
 }
+
+

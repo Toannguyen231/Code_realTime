@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import './Sidebar.scss';
 import { FiChevronLeft, FiChevronRight, FiUsers, FiMessageSquare, FiSend } from 'react-icons/fi';
 import { FaCrown } from 'react-icons/fa6';

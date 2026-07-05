@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { FiShare2, FiCopy, FiCheck, FiX, FiExternalLink, FiCode, FiTwitter, FiFacebook } from 'react-icons/fi';
 import API from '../../api';
 import './ShareModal.scss';

@@ -1,6 +1,6 @@
-/* ───────────────────────────────────────────
+﻿/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    ShareModal Styles
-   ─────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .share-overlay {
   position: fixed;
@@ -37,7 +37,7 @@
   animation: slideUp 0.25s ease;
 }
 
-/* ─── Header ─── */
+/* â”€â”€â”€ Header â”€â”€â”€ */
 .share-header {
   display: flex;
   align-items: center;
@@ -87,12 +87,12 @@
   color: #f87171;
 }
 
-/* ─── Body ─── */
+/* â”€â”€â”€ Body â”€â”€â”€ */
 .share-body {
   padding: 24px;
 }
 
-/* ─── Preview card ─── */
+/* â”€â”€â”€ Preview card â”€â”€â”€ */
 .share-preview {
   background: #1a1a2e;
   border: 1px solid rgba(99, 102, 241, 0.08);
@@ -137,7 +137,7 @@
 .preview-code::-webkit-scrollbar { width: 4px; }
 .preview-code::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.2); border-radius: 2px; }
 
-/* ─── Form ─── */
+/* â”€â”€â”€ Form â”€â”€â”€ */
 .share-form {
   display: flex;
   flex-direction: column;
@@ -178,14 +178,14 @@ select.form-input {
   padding-right: 36px;
 }
 
-/* ─── Buttons ─── */
+/* â”€â”€â”€ Buttons â”€â”€â”€ */
 .btn-create {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #6366f1, #c084fc);
   color: white;
   font-weight: 600;
   font-size: 14px;
@@ -203,7 +203,7 @@ select.form-input {
   transform: translateY(0);
 }
 
-/* ─── Success state ─── */
+/* â”€â”€â”€ Success state â”€â”€â”€ */
 .share-body.done {
   display: flex;
   flex-direction: column;
@@ -230,7 +230,7 @@ select.form-input {
   margin: 0;
 }
 
-/* ─── Link rows ─── */
+/* â”€â”€â”€ Link rows â”€â”€â”€ */
 .link-row {
   display: flex;
   flex-direction: column;
@@ -290,7 +290,7 @@ select.form-input {
   color: #4ade80;
 }
 
-/* ─── Social row ─── */
+/* â”€â”€â”€ Social row â”€â”€â”€ */
 .social-row {
   display: flex;
   align-items: center;
@@ -337,7 +337,7 @@ select.form-input {
   background: rgba(29, 161, 242, 0.2);
 }
 
-/* ─── Preview card (simulate social card) ─── */
+/* â”€â”€â”€ Preview card (simulate social card) â”€â”€â”€ */
 .preview-wrapper {
   margin-top: 8px;
 }
@@ -353,7 +353,7 @@ select.form-input {
 .preview-card-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #0a0e17, #1e1b4b);
+  background: linear-gradient(135deg, #2d3748, #1e1b4b);
   z-index: 0;
 }
 
@@ -398,7 +398,7 @@ select.form-input {
   margin-top: 8px;
 }
 
-/* ─── Loading ─── */
+/* â”€â”€â”€ Loading â”€â”€â”€ */
 .share-body.loading-state {
   display: flex;
   flex-direction: column;
@@ -421,7 +421,7 @@ select.form-input {
   to { transform: rotate(360deg); }
 }
 
-/* ─── Error ─── */
+/* â”€â”€â”€ Error â”€â”€â”€ */
 .share-body.error-state {
   display: flex;
   flex-direction: column;
@@ -453,3 +453,4 @@ select.form-input {
 .btn-retry:hover {
   background: rgba(99, 102, 241, 0.2);
 }
+

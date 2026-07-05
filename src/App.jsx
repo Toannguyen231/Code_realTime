@@ -16,7 +16,7 @@ import { Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="app-shell" style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="app-shell">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />

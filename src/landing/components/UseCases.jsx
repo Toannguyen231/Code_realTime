@@ -1,3 +1,5 @@
+import { useRef, useEffect, useState } from 'react';
+
 const USERS = [
   {
     icon: '👨‍💻',
@@ -21,6 +23,44 @@ const USERS = [
   },
 ];
 
+function UseCaseCard({ useCase, index }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setVisible(true), index * 120);
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [index]);
+
+  return (
+    <div
+      ref={ref}
+      className="uc-card"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(24px)',
+        transition: `opacity 0.5s ease ${index * 80}ms, transform 0.5s var(--ease-out-expo) ${index * 80}ms`,
+      }}
+    >
+      <h4>{useCase.icon} {useCase.title}</h4>
+      <ul>
+        {useCase.items.map(item => <li key={item}>{item}</li>)}
+      </ul>
+    </div>
+  );
+}
+
 export default function UseCases() {
   return (
     <section className="section">
@@ -31,12 +71,7 @@ export default function UseCases() {
         </div>
         <div className="uc-grid">
           {USERS.map((u, i) => (
-            <div key={u.title} className={'uc-card reveal reveal-delay-' + ((i % 4) + 1)}>
-              <h4>{u.icon} {u.title}</h4>
-              <ul>
-                {u.items.map(item => <li key={item}>{item}</li>)}
-              </ul>
-            </div>
+            <UseCaseCard key={u.title} useCase={u} index={i} />
           ))}
         </div>
       </div>

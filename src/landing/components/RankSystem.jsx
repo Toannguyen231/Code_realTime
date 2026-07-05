@@ -1,3 +1,5 @@
+import { useRef, useEffect, useState } from 'react';
+
 const RANKS = [
   { emblem: '👑', bg: 'linear-gradient(135deg,#fff6d8,#e0b23a)', name: 'Thách Đấu', en: 'Master', points: '12.001+ điểm' },
   { emblem: '💎', bg: 'linear-gradient(135deg,#dff4f2,#7fd9cf)', name: 'Kim Cương', en: 'Diamond', points: '8.001 – 12.000' },
@@ -7,6 +9,43 @@ const RANKS = [
   { emblem: '🥉', bg: 'linear-gradient(135deg,#f4ddc9,#c98652)', name: 'Đồng', en: 'Bronze', points: '501 – 1.500' },
   { emblem: '⚔️', bg: 'linear-gradient(135deg,#d9dde2,#8f98a3)', name: 'Sắt', en: 'Iron', points: '0 – 500' },
 ];
+
+function RankRow({ rank, index }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Stagger
+          setTimeout(() => setVisible(true), index * 100);
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [index]);
+
+  return (
+    <div
+      ref={ref}
+      className={'rank-row' + (visible ? ' in' : '')}
+      style={{
+        transitionDelay: `${index * 60}ms`,
+        transformOrigin: 'left center',
+      }}
+    >
+      <div className="rank-emblem" style={{ background: rank.bg }}>{rank.emblem}</div>
+      <div className="rank-name">{rank.name} <span>{rank.en}</span></div>
+      <div className="rank-points">{rank.points}</div>
+    </div>
+  );
+}
 
 export default function RankSystem() {
   return (
@@ -19,11 +58,7 @@ export default function RankSystem() {
         </div>
         <div className="rank-list">
           {RANKS.map((r, i) => (
-            <div key={r.name} className={'rank-row reveal reveal-delay-' + ((i % 5) + 1)}>
-              <div className="rank-emblem" style={{ background: r.bg }}>{r.emblem}</div>
-              <div className="rank-name">{r.name} <span>{r.en}</span></div>
-              <div className="rank-points">{r.points}</div>
-            </div>
+            <RankRow key={r.name} rank={r} index={i} />
           ))}
         </div>
       </div>

@@ -1,4 +1,4 @@
-.ai-panel-container {
+﻿.ai-panel-container {
   display: flex;
   flex-direction: column;
   z-index: 50;
@@ -33,7 +33,7 @@
         color: var(--text-primary);
         font-size: 14px;
         flex-wrap: wrap;
-        svg { color: #8b5cf6; }
+        svg { color: #c084fc; }
       }
 
       .ai-save-badge {
@@ -98,7 +98,7 @@
         font-family: 'Inter', sans-serif;
         &:hover { background: rgba(139, 92, 246, 0.08); border-color: rgba(139, 92, 246, 0.2); }
         &:disabled { opacity: 0.4; cursor: not-allowed; }
-        svg { color: #8b5cf6; }
+        svg { color: #c084fc; }
       }
     }
 
@@ -125,7 +125,7 @@
         &.user {
           justify-content: flex-end;
           .ai-bubble {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
             color: #fff;
             border-bottom-right-radius: 4px;
             pre { color: #fff; }
@@ -152,7 +152,7 @@
           font-size: 13px;
           line-height: 1.6;
           pre { margin: 0; white-space: pre-wrap; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
-          .ai-typing { display: inline-block; animation: pulse 1s infinite alternate; color: #8b5cf6; margin-right: 4px; }
+          .ai-typing { display: inline-block; animation: pulse 1s infinite alternate; color: #c084fc; margin-right: 4px; }
         }
       }
     }
@@ -182,7 +182,7 @@
         outline: none;
         transition: border-color 0.2s;
         &::placeholder { color: var(--text-dim); }
-        &:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
+        &:focus { border-color: #c084fc; box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
         &:disabled { opacity: 0.5; cursor: not-allowed; }
       }
 
@@ -200,7 +200,7 @@
         transition: all 0.2s;
         flex-shrink: 0;
         &.active {
-          background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+          background: linear-gradient(135deg, #c084fc, #7c3aed);
           color: #fff;
           cursor: pointer;
           box-shadow: 0 2px 12px rgba(139, 92, 246, 0.3);
@@ -215,3 +215,4 @@
 
 @keyframes pulse { from { opacity: 0.2; } to { opacity: 1; } }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+

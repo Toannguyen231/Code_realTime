@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   FiArrowLeft,
@@ -451,7 +451,7 @@ const ProblemPage = () => {
 
   const statusColor = runStatus
     ? runStatus.id === 3
-      ? '#10b981'
+      ? '#34d399'
       : runStatus.id === 6
         ? '#f59e0b'
         : '#ef4444'
@@ -636,7 +636,7 @@ const ProblemPage = () => {
                     </button>
                   ) : (
                     <div style={{ marginTop: '10px' }}>
-                      <strong style={{ display: 'block', marginBottom: '6px', color: '#10b981' }}>Lời giải mẫu tham khảo:</strong>
+                      <strong style={{ display: 'block', marginBottom: '6px', color: '#34d399' }}>Lời giải mẫu tham khảo:</strong>
                       <pre style={{ margin: 0, padding: '12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', overflowX: 'auto', fontFamily: 'JetBrains Mono, monospace', fontSize: '12px', whiteSpace: 'pre-wrap' }}>
                         {solutionCode}
                       </pre>
@@ -864,3 +864,4 @@ const ProblemPage = () => {
 };
 
 export default ProblemPage;
+

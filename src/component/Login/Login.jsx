@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiUser, FiCode, FiUsers, FiZap, FiCpu, FiEye, FiEyeOff, FiCheck, FiX, FiChevronRight, FiGithub, FiTerminal, FiExternalLink } from 'react-icons/fi';
 import { SiCodeforces } from 'react-icons/si';
@@ -104,10 +104,10 @@ function GridBg() {
 
 // ─── Code decor lines ───
 const codeDecorLines = [
-  { indent: 0, text: 'import { Collaboration } from "coderoom";', color: '#10b981' },
-  { indent: 0, text: 'import { AI, Battle } from "features";', color: '#10b981' },
+  { indent: 0, text: 'import { Collaboration } from "coderoom";', color: '#34d399' },
+  { indent: 0, text: 'import { AI, Battle } from "features";', color: '#34d399' },
   { indent: 0, text: '', color: 'transparent' },
-  { indent: 0, text: 'const room = new Room("codexa-2026");', color: '#8b5cf6' },
+  { indent: 0, text: 'const room = new Room("codexa-2026");', color: '#c084fc' },
   { indent: 1, text: 'room.join(session);', color: '#e2e8f0' },
   { indent: 1, text: 'room.sync({ realtime: true });', color: '#e2e8f0' },
   { indent: 0, text: '', color: 'transparent' },
@@ -150,7 +150,7 @@ function PasswordStrength({ password }) {
 
   const score = checks.filter((c) => c.pass).length;
   const barColor =
-    score <= 1 ? '#ef4444' : score <= 3 ? '#f59e0b' : score <= 4 ? '#10b981' : '#10b981';
+    score <= 1 ? '#ef4444' : score <= 3 ? '#f59e0b' : score <= 4 ? '#34d399' : '#34d399';
   const label =
     score <= 1 ? 'Rất yếu' : score <= 3 ? 'Trung bình' : score <= 4 ? 'Mạnh' : 'Rất mạnh';
 
@@ -227,7 +227,7 @@ const Login = () => {
 
       navigate('/rooms');
     } catch (err) {
-      setError('Không thể kết nối server: ' + err.message);
+      setError('Kh�ng th? k?t n?i server: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -458,3 +458,7 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+

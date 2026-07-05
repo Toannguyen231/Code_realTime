@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const NAV_LINKS = [
@@ -8,12 +9,44 @@ const NAV_LINKS = [
 ];
 
 export default function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 80);
+
+      // Detect active section
+      const sections = NAV_LINKS.map(l => l.href.slice(1));
+      let current = '';
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 200) current = id;
+        }
+      }
+      setActiveSection(current);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <nav>
-      <div className="logo">&lt;Codexa/&gt;</div>
+    <nav className={scrolled ? 'scrolled' : ''}>
+      <div className="logo">
+        &lt;Codexa/&gt;
+        <span className="logo-dot" />
+      </div>
       <div className="links">
         {NAV_LINKS.map(l => (
-          <a key={l.href} className="navlink" href={l.href}>{l.label}</a>
+          <a
+            key={l.href}
+            className={'navlink' + (activeSection === l.href.slice(1) ? ' active' : '')}
+            href={l.href}
+          >
+            {l.label}
+          </a>
         ))}
         <a
           className="btn btn-ghost"

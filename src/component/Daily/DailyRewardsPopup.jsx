@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { FiX, FiCheck } from 'react-icons/fi';
 import './DailyRewardsPopup.scss';
 

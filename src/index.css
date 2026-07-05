@@ -81,13 +81,15 @@ html,
 body,
 #root {
   height: 100%;
-  overflow: hidden;
+}
+body {
+  overflow-y: auto;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', 'DM Sans', system-ui, -apple-system, sans-serif !important;
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -124,3 +126,14 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* Fix for Bootstrap overrides */
+h1, h2, h3, h4, h5, h6 { font-family: 'JetBrains Mono', monospace !important; }
+.btn { font-family: 'Inter', sans-serif !important; }
+
+
+
+/* Global fix for overriding Bootstrap fonts in forms */
+input, button, select, textarea { font-family: inherit !important; }
+
+

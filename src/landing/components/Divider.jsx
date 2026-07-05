@@ -1,7 +1,7 @@
-export default function Divider() {
+export default function Divider({ variant }) {
   return (
     <div className="wrap">
-      <div className="divider" />
+      <div className={'divider' + (variant === 'glow' ? ' divider-glow' : '')} />
     </div>
   );
 }

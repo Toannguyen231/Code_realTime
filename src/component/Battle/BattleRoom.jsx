@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FiClock, FiSend, FiPlay, FiChevronDown, FiChevronUp, FiZap, FiUser, FiCheckCircle, FiXCircle, FiAlertTriangle } from 'react-icons/fi';
 import { io } from 'socket.io-client';
@@ -49,7 +49,7 @@ const BattleRoom = () => {
   const typingTimeoutRef = useRef(null);
 
   // ── IO panel ──
-  const [ioPanelOpen, setIoPanelOpen] = useState(OPtrue);
+  const [ioPanelOpen, setIoPanelOpen] = useState(true);
   const [customInput, setCustomInput] = useState('');
   const [output, setOutput] = useState('');
   const [outputLoading, setOutputLoading] = useState(false);
@@ -205,7 +205,7 @@ const BattleRoom = () => {
     return `${m}:${String(s).padStart(2, '0')}`;
   };
 
-  const timerColor = timeLeft <= 300 ? '#ef4444' : timeLeft <= 600 ? '#f59e0b' : status === 'finished' ? '#64748b' : '#10b981';
+  const timerColor = timeLeft <= 300 ? '#ef4444' : timeLeft <= 600 ? '#f59e0b' : status === 'finished' ? '#64748b' : '#34d399';
 
   // ── Typing Handler ──
   const handleCodeChange = (newCode) => {
@@ -597,3 +597,5 @@ const BattleRoom = () => {
 };
 
 export default BattleRoom;
+
+

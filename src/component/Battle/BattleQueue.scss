@@ -1,4 +1,4 @@
-@import '../../index.css';
+﻿@import '../../index.css';
 
 .queue-screen {
   height: 100vh;
@@ -17,7 +17,7 @@
   }
 }
 
-/* ── Queue Card ── */
+/* â”€â”€ Queue Card â”€â”€ */
 .queue-card {
   text-align: center;
   background: var(--bg-card);
@@ -115,7 +115,7 @@
   }
 }
 
-/* ── Matched Card ── */
+/* â”€â”€ Matched Card â”€â”€ */
 .matched-card {
   text-align: center;
   background: var(--bg-card);
@@ -135,7 +135,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.06), transparent 50%);
+  background: radial-gradient(circle at center, rgba(52, 211, 153, 0.06), transparent 50%);
   pointer-events: none;
   animation: rotate 4s linear infinite;
 }
@@ -209,7 +209,7 @@
   }
 }
 
-/* ── Countdown ── */
+/* â”€â”€ Countdown â”€â”€ */
 .countdown-overlay {
   position: fixed;
   inset: 0;
@@ -236,10 +236,12 @@
   color: var(--text-secondary);
 }
 
-/* ── Animations ── */
+/* â”€â”€ Animations â”€â”€ */
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes countdownPop { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
 @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+
