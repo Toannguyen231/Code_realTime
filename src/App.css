@@ -3,6 +3,22 @@
   background: var(--bg-primary);
 }
 
+/* Outer app-shell (từ App.jsx route wrapper) - full viewport */
+#root > .app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inner app-shell khi ở trong room (CodeApp.jsx) - co lại gọn */
+.app-shell .app-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 /* Main Area: Sidebar + Editor */
 .app-main {
   display: flex;
