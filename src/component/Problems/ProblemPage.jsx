@@ -89,7 +89,7 @@ const ProblemPage = () => {
 
   const statementRef = useRef(null);
   const workspaceRef = useRef(null);
-  const token = localStorage.getItem('token') || '';
+  const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
   const isAuth = Boolean(token);
 
   const problemUrl = useMemo(() => (problem ? buildProblemUrl(problem) : ''), [problem]);

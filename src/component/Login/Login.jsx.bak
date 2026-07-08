@@ -140,11 +140,11 @@ function PasswordStrength({ password }) {
   if (!password) return null;
 
   const checks = [
-    { label: ' 6 ký tự', pass: password.length >= 6 },
-    { label: 'Có chữ hoa', pass: /[A-Z]/.test(password) },
-    { label: 'Có chữ thường', pass: /[a-z]/.test(password) },
-    { label: 'Có số', pass: /\d/.test(password) },
-    { label: 'Có ký tự đặc biệt', pass: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password) },
+    { label: ' 6 ký t?', pass: password.length >= 6 },
+    { label: 'Có ch? hoa', pass: /[A-Z]/.test(password) },
+    { label: 'Có ch? thu?ng', pass: /[a-z]/.test(password) },
+    { label: 'Có s?', pass: /\d/.test(password) },
+    { label: 'Có ký t? d?c bi?t', pass: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password) },
   ];
 
   const score = checks.filter((c) => c.pass).length;
@@ -220,7 +220,6 @@ const Login = () => {
       // Lưu access token
       const token = extractToken(data);
       localStorage.setItem('token', token);
-      localStorage.setItem('accessToken', token);
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.removeItem('coderoom.problemStatuses');
 
@@ -266,14 +265,14 @@ const Login = () => {
             </div>
 
             <p className="login-tagline">
-              Nền tảng lập trình cộng tác <br />
-              <strong>thời gian thực</strong> dành cho developers.
+              N?n t?ng l?p trình c?ng tác <br />
+              <strong>th?i gian th?c</strong> dành cho developers.
             </p>
 
             <div className="login-feature-pills">
-              <span className="pill"><FiCode size={12} /> Editor đồng cấp</span>
+              <span className="pill"><FiCode size={12} /> Editor d?ng c?p</span>
               <span className="pill"><FiUsers size={12} /> Code cùng nhau</span>
-              <span className="pill"><FiZap size={12} /> 7+ ngôn ngữ</span>
+              <span className="pill"><FiZap size={12} /> 7+ ngôn ng?</span>
               <span className="pill"><FiCpu size={12} /> AI Assistant</span>
               <span className="pill"><FiTerminal size={12} /> PvP Battle</span>
               <span className="pill"><SiCodeforces size={11} /> Codeforces</span>
@@ -284,11 +283,11 @@ const Login = () => {
             <div className="login-stats">
               <div className="stat-item">
                 <span className="stat-number">500+</span>
-                <span className="stat-label">Bài tập</span>
+                <span className="stat-label">Bài t?p</span>
               </div>
               <div className="stat-item">
                 <span className="stat-number">50K+</span>
-                <span className="stat-label">Lượt code</span>
+                <span className="stat-label">L??t code</span>
               </div>
               <div className="stat-item">
                 <span className="stat-number">#1</span>
@@ -308,14 +307,14 @@ const Login = () => {
                 onClick={() => !isRegister || switchMode()}
                 type="button"
               >
-                Đăng nhập
+                Dang nh?p
               </button>
               <button
                 className={`login-tab ${isRegister ? 'active' : ''}`}
                 onClick={() => isRegister || switchMode()}
                 type="button"
               >
-                Đăng ký
+                Dang ký
               </button>
               <div className={`login-tab-indicator ${isRegister ? 'right' : 'left'}`} />
             </div>
@@ -336,7 +335,7 @@ const Login = () => {
               )}
 
               <div className={`login-field ${isRegister ? 'field-visible' : 'field-hidden'}`}>
-                <label htmlFor="username">Tên hiển thị</label>
+                <label htmlFor="username">Tên hi?n th?</label>
                 <div className="login-input-wrap">
                   <FiUser className="login-input-icon" size={16} />
                   <input
@@ -369,13 +368,13 @@ const Login = () => {
               </div>
 
               <div className="login-field">
-                <label htmlFor="password">Mật khẩu</label>
+                <label htmlFor="password">M?t kh?u</label>
                 <div className="login-input-wrap">
                   <FiLock className="login-input-icon" size={16} />
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={isRegister ? 'Tạo mật khẩu mạnh' : '••••••••'}
+                    placeholder={isRegister ? 'T?o m?t kh?u m?nh' : '••••••••'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -398,18 +397,18 @@ const Login = () => {
                 {loading ? (
                   <span className="login-submit-loading">
                     <span className="spinner" />
-                    Đang xử lý...
+                    Dang x? lý...
                   </span>
                 ) : (
                   <span className="login-submit-text">
-                    {isRegister ? 'Tạo tài khoản' : 'Đăng nhập'}
+                    {isRegister ? 'T?o tài kho?n' : 'Dang nh?p'}
                     <FiChevronRight size={18} />
                   </span>
                 )}
               </button>
 
               <div className="login-social-divider">
-                <span>hoặc tiếp tục với</span>
+                <span>ho?c ti?p t?c v?i</span>
               </div>
               <div className="login-social-buttons">
                 <button type="button" className="login-social-btn" disabled>
@@ -419,7 +418,7 @@ const Login = () => {
                   <FiExternalLink size={18} /> Google
                 </button>
               </div>
-              <p className="login-social-note">Sắp ra mắt • Đang phát triển</p>
+              <p className="login-social-note">S?p ra m?t • Dang phát tri?n</p>
 
               {isRegister && successMsg && (
                 <p className="login-verify-note" style={{
@@ -428,20 +427,20 @@ const Login = () => {
                   color: '#a5b4fc', fontSize: 13, textAlign: 'center',
                 }}>
                   <FiMail size={13} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                  Kiểm tra email của bạn để xác thực tài khoản.
+                  Ki?m tra email c?a b?n d? xác th?c tài kho?n.
                 </p>
               )}
             </form>
 
             <p className="login-footer-text">
-              Bằng việc tiếp tục, bạn đồng ý với{' '}
-              <a href="#terms">Điều khoản dịch vụ</a> và{' '}
-              <a href="#privacy">Chính sách bảo mật</a> của chúng tôi.
+              B?ng vi?c ti?p t?c, b?n d?ng ý v?i{' '}
+              <a href="#terms">Di?u kho?n d?ch v?</a> và{' '}
+              <a href="#privacy">Chính sách b?o m?t</a> c?a chúng tôi.
             </p>
           </div>
 
           <button className="login-back-link" onClick={() => navigate('/')} type="button">
-            ← Quay lại trang chủ
+            ← Quay l?i trang ch?
           </button>
         </div>
       </div>

@@ -35,7 +35,7 @@ const Profile = () => {
   const [activityData, setActivityData] = useState(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
     if (!token) { navigate('/'); return; }
 
     getMe()
@@ -78,6 +78,8 @@ const Profile = () => {
   const syncLocalUser = (updated) => {
     setUser(updated);
     localStorage.setItem('user', JSON.stringify(updated));
+    // Dispatch custom event để các component khác biết user đã thay đổi
+    window.dispatchEvent(new CustomEvent('user-updated'));
   };
 
   const clearAlerts = () => { setMsg(''); setErr(''); };

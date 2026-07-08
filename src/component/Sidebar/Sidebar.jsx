@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
 import './Sidebar.scss';
-import { FiChevronLeft, FiChevronRight, FiUsers, FiMessageSquare, FiSend } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiUsers, FiMessageSquare, FiSend, FiX } from 'react-icons/fi';
 import { FaCrown } from 'react-icons/fa6';
 
 const AVATAR_COLORS = ['#4caf50', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#00bcd4'];

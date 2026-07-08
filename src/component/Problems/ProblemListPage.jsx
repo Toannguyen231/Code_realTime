@@ -29,7 +29,7 @@ const ProblemListPage = () => {
   const [statuses, setStatuses] = useState({});
 
   useEffect(() => {
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
     fetchProblemStatuses(token).then((res) => {
       setStatuses(res || {});
     });

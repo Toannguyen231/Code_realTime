@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import CodeApp from './CodeApp';
 import Login from './component/Login/Login.jsx';
+import { EmailVerification, ForgotPassword, ResetPassword } from './component/AuthPages.jsx';
 import RoomMenu from './component/RoomMenu/RoomMenu.jsx';
 import Profile from './component/Profile/Profile.jsx';
 import ProblemListPage from './component/Problems/ProblemListPage.jsx';
@@ -24,6 +25,9 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/problems" element={<ProblemListPage />} />
         <Route path="/problems/:contestId/:index" element={<ProblemPage />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/room/:id" element={<CodeApp />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/battle" element={<BattleHub />} />

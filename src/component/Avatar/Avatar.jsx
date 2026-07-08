@@ -9,6 +9,7 @@ const Avatar = ({ user, className = '', size = 'md' }) => {
   if (avatar.type === 'image') {
     return (
       <img
+        key={avatar.src}
         src={avatar.src}
         alt=""
         className={`avatar-img ${sizeClass} ${className}`}

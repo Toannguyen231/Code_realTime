@@ -17,7 +17,7 @@ const BattleQueue = () => {
   const timerRef = useRef(null);
   const matchRoomIdRef = useRef(null);
 
-  const token = localStorage.getItem('token') || '';
+  const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
 
   useEffect(() => {
     const socket = io(`${SERVER_URL}/battle`, {

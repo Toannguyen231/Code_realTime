@@ -26,7 +26,7 @@ const LANGUAGE_TEMPLATES = {
 const BattleRoom = () => {
   const { id: roomId } = useParams();
   const navigate = useNavigate();
-  const token = localStorage.getItem('token') || '';
+  const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
 
   // ── Core state ──
   const [problem, setProblem] = useState(null);

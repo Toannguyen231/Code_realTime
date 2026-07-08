@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.scss';
 import { FiPlay, FiShare2, FiCopy, FiCheck, FiChevronDown, FiLogOut, FiUser, FiClock, FiArrowLeft, FiHome } from 'react-icons/fi';
@@ -11,7 +11,30 @@ import { FiSettings, FiZap } from 'react-icons/fi';
 
 const CODEXA_LOGO = '/codexa-logo-transparent.png';
 
-const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, onlineUsers = [], currentUser = {}, onOpenHistory, editorSettings, setEditorSettings, aiOpen, setAIOpen, onShare }) => {
+// Helper đọc user từ localStorage — dùng chung cho state + events
+const readLocalUser = () => {
+  try { return JSON.parse(localStorage.getItem('user')) || {}; }
+  catch { return {}; }
+};
+
+const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, onlineUsers = [], currentUser: _ignored, onOpenHistory, editorSettings, setEditorSettings, aiOpen, setAIOpen, onShare }) => {
+  // ⚠️ KHÔNG dùng prop currentUser từ CodeApp vì không sync kịp khi đổi avatar.
+  // Thay vào đó, đọc trực tiếp từ localStorage + subscribe events.
+  const [localUser, setLocalUser] = useState(readLocalUser);
+  const currentUser = localUser; // dùng tên currentUser cho phần render bên dưới
+
+  // Sync user realtime
+  useEffect(() => {
+    const sync = () => setLocalUser(readLocalUser());
+    window.addEventListener('storage', (e) => { if (e.key === 'user') sync(); });
+    window.addEventListener('user-updated', sync);
+    window.addEventListener('focus', sync);
+    return () => {
+      window.removeEventListener('storage', sync);
+      window.removeEventListener('user-updated', sync);
+      window.removeEventListener('focus', sync);
+    };
+  }, []);
   const [copied, setCopied] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -51,6 +74,7 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('coderoom.problemStatuses'); // xóa cache trạng thái bài khi đăng xuất
     setProfileOpen(false);
     navigate('/');

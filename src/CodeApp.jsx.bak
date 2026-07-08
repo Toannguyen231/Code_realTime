@@ -25,16 +25,8 @@ function CodeApp() {
     const [searchParams] = useSearchParams();
     const problemId = searchParams.get('problem') || (roomId?.startsWith('CF-') ? roomId.substring(3) : '');
 
-    // Lấy JWT token từ localStorage — sync với storage events để luôn reactive
-    // khi user login/logout ở tab khác
-    const [token, setToken] = useState(() => localStorage.getItem('accessToken') || localStorage.getItem('token') || '');
-    useEffect(() => {
-        const handleStorage = (e) => {
-            if (e.key === 'token' || e.key === 'accessToken') setToken(e.newValue || '');
-        };
-        window.addEventListener('storage', handleStorage);
-        return () => window.removeEventListener('storage', handleStorage);
-    }, []);
+    // Lấy JWT token từ localStorage
+    const [token] = useState(() => localStorage.getItem('token') || '');
 
     const [problem, setProblem] = useState(null);
     const [problemLoading, setProblemLoading] = useState(false);

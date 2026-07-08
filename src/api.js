@@ -1,11 +1,11 @@
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+/**
+ * api.js - HTTP client with auto-refresh token support
+ * Dùng cho toàn bộ frontend CodeRoom
+ */
 
-// ── Auth helpers ───────────────────────────────────────────────────────
-const getToken = () => localStorage.getItem('token') || '';
-const authHeaders = () => {
-  const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-};
+import { getAccessToken, refreshAccessToken, authHeaders, logout } from './services/auth';
+
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // ── URL builder ────────────────────────────────────────────────────────
 const buildUrl = (path, params) => {
@@ -36,25 +36,40 @@ const request = async (method, path, options = {}) => {
     body = options.json;
   }
 
-  const response = await fetch(buildUrl(path, options.params), {
+  const credentialsOption = options.credentials || 'include';
+
+  let response = await fetch(buildUrl(path, options.params), {
     method,
     headers,
     body,
     signal: options.signal,
+    credentials: credentialsOption,
   });
+
+  // ── Auto refresh on 401 ────────────────────────────────────
+  if (response.status === 401 && getAccessToken()) {
+    const newToken = await refreshAccessToken();
+    if (newToken) {
+      // Thử lại request với token mới
+      headers.Authorization = `Bearer ${newToken}`;
+      response = await fetch(buildUrl(path, options.params), {
+        method,
+        headers,
+        body,
+        signal: options.signal,
+        credentials: credentialsOption,
+      });
+    } else {
+      // Refresh thất bại → redirect login
+      logout();
+      throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+    }
+  }
 
   const contentType = response.headers.get('content-type') || '';
   const data = contentType.includes('application/json')
     ? await response.json()
     : await response.text();
-
-  // ── Auto logout on 401 (token expired/invalid) ─────────────────
-  if (response.status === 401 && getToken()) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
-    throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
-  }
 
   if (!response.ok) {
     const message = typeof data === 'object' ? data.message || data.error : data;
@@ -90,6 +105,11 @@ export const fetchRaw = async (path, options = {}) => {
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
 };
+
+// ── Legacy helper: lấy token cũ (tương thích code cũ) ──────────────────
+// Để migrate dần, component nào cần token có thể dùng:
+//   import { getAccessToken } from './services/auth';
+// thay vì localStorage.getItem('token')
 
 // ── API object ─────────────────────────────────────────────────────────
 const API = {

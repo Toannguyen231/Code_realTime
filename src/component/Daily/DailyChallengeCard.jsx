@@ -5,7 +5,7 @@ import './DailyChallengeCard.scss';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
-const getToken = () => localStorage.getItem('token') || '';
+const getToken = () => localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
 
 const DailyChallengeCard = () => {
   const navigate = useNavigate();

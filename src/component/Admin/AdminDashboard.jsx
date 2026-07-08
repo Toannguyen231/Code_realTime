@@ -13,11 +13,25 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token') || '';
-  const currentUser = (() => {
+  const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
+  const [currentUser, setCurrentUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user')) || {}; }
     catch { return {}; }
-  })();
+  });
+
+  // Sync user khi có thay đổi
+  useEffect(() => {
+    const syncUser = () => {
+      try { setCurrentUser(JSON.parse(localStorage.getItem('user')) || {}); }
+      catch { setCurrentUser({}); }
+    };
+    window.addEventListener('storage', (e) => { if (e.key === 'user') syncUser(); });
+    window.addEventListener('user-updated', syncUser);
+    return () => {
+      window.removeEventListener('storage', syncUser);
+      window.removeEventListener('user-updated', syncUser);
+    };
+  }, []);
 
   // Security Check: Redirect if not admin
   useEffect(() => {
@@ -338,7 +352,7 @@ const AdminDashboard = () => {
   };
 
   const handleGenerateAiTestcases = async () => {
-    if (!window.confirm('Hệ thống sẽ dùng Gemini AI để quét đề bài và tạo lại bộ test case ẩn. Thao tác này sẽ ghi đè bộ testcase cũ. Bạn muốn tiếp tục?')) {
+    if (!window.confirm('Hệ thống sẽ dùng AI (DeepSeek) sinh reference solution C++ → chạy qua Judge0 để verify output thật.\n\nThao tác này sẽ ghi đè bộ test case ẩn cũ.\nBạn muốn tiếp tục?')) {
       return;
     }
     setAiGenerating(true);
@@ -349,9 +363,9 @@ const AdminDashboard = () => {
         method: 'POST'
       });
       setTestcases(data.testcases || []);
-      setSuccessAlert(data.message || 'AI sinh testcases thành công!');
+      setSuccessAlert(data.message || 'Sinh + verify testcases thành công!');
     } catch (err) {
-      setTestcaseMessage('Lỗi AI sinh testcases: ' + err.message);
+      setTestcaseMessage('Lỗi sinh testcases: ' + err.message);
     } finally {
       setAiGenerating(false);
       setTestcaseLoading(false);
@@ -988,7 +1002,7 @@ const AdminDashboard = () => {
             <form onSubmit={handleImportProblem}>
               <div className="admin-modal-body">
                 <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '16px', lineHeight: '1.6' }}>
-                  Nhập thông tin đề bài từ Codeforces. Hệ thống sẽ tự động cào đề bài, tải tài nguyên, và dùng AI Gemini để tạo bộ test case ẩn nếu bài tập chưa tồn tại trong cache.
+                  Nhập thông tin đề bài từ Codeforces. Hệ thống sẽ tự động cào đề bài, tải tài nguyên, và sinh bộ test case ẩn (verify qua reference solution) nếu bài tập chưa tồn tại trong cache.
                 </p>
                 {importError && <div className="modal-alert error">{importError}</div>}
                 {importMessage && <div className="modal-alert success">{importMessage}</div>}
@@ -1044,7 +1058,7 @@ const AdminDashboard = () => {
                     onClick={handleGenerateAiTestcases}
                     disabled={aiGenerating || testcaseLoading}
                   >
-                    <FiCpu size={14} /> {aiGenerating ? 'AI Đang Sinh...' : 'Sinh bằng AI'}
+                    <FiCpu size={14} /> {aiGenerating ? 'Đang Sinh + Verify...' : '🔄 Sinh + Verify'}
                   </button>
                   <button className="add-testcase-btn" onClick={handleAddTestcase}>
                     <FiPlus size={14} /> Thêm Testcase

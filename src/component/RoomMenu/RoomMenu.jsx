@@ -47,11 +47,25 @@ const RoomMenu = () => {
   const [verifying, setVerifying] = useState(false);
 
   // Lay thong tin user + token tu localStorage
-  const token = localStorage.getItem('token') || '';
-  const currentUser = (() => {
+  const token = localStorage.getItem('accessToken') || localStorage.getItem('token') || '';
+  const [currentUser, setCurrentUser] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user')) || {}; }
     catch { return {}; }
-  })();
+  });
+
+  // Sync user khi có thay đổi từ Profile hoặc tab khác
+  useEffect(() => {
+    const syncUser = () => {
+      try { setCurrentUser(JSON.parse(localStorage.getItem('user')) || {}); }
+      catch { setCurrentUser({}); }
+    };
+    window.addEventListener('storage', (e) => { if (e.key === 'user') syncUser(); });
+    window.addEventListener('user-updated', syncUser);
+    return () => {
+      window.removeEventListener('storage', syncUser);
+      window.removeEventListener('user-updated', syncUser);
+    };
+  }, []);
 
   // Neu chua login -> redirect ve trang login
   useEffect(() => {
@@ -207,6 +221,7 @@ const RoomMenu = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
     localStorage.removeItem('coderoom.problemStatuses');
     navigate('/');

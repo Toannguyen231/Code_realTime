@@ -26,7 +26,7 @@ const AIPanel = ({ code, language, onClose }) => {
   const aiTextRef = useRef('');
   const lastSavedKeyRef = useRef('');
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
   const isAuth = Boolean(token);
 
   messagesRef.current = messages;

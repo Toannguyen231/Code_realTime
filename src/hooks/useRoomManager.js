@@ -49,20 +49,38 @@ const createProblemBoilerplate = (problem, language) => {
  * @param {string} token - JWT Token xác thực người dùng
  */
 export const useRoomManager = (roomId, token, problemId = '') => {
-    // Thông tin người dùng hiện tại
-    const [currentUser, setCurrentUser] = useState(() => {
-        try {
-            return JSON.parse(localStorage.getItem('user')) || {};
-        } catch { return {}; }
-    });
+    // Thông tin người dùng hiện tại — đọc từ localStorage ngay khi mount
+    const readUserFromStorage = () => {
+        try { return JSON.parse(localStorage.getItem('user')) || {}; }
+        catch { return {}; }
+    };
+    const [currentUser, setCurrentUser] = useState(readUserFromStorage);
 
     useEffect(() => {
         const syncUser = () => {
-            try { setCurrentUser(JSON.parse(localStorage.getItem('user')) || {}); }
-            catch { setCurrentUser({}); }
+            const fresh = readUserFromStorage();
+            setCurrentUser(prev => {
+                // Chỉ setState nếu thực sự có thay đổi (tránh re-render vô ích)
+                if (JSON.stringify(prev) === JSON.stringify(fresh)) return prev;
+                return fresh;
+            });
         };
+
+        // Sync khi tab khác change localStorage (cross-tab)
+        const handleStorage = (e) => {
+            if (e.key === 'user') syncUser();
+        };
+        // Sync khi Profile dispatch event 'user-updated' (same-tab)
+        const handleCustomEvent = () => syncUser();
+
         window.addEventListener('focus', syncUser);
-        return () => window.removeEventListener('focus', syncUser);
+        window.addEventListener('storage', handleStorage);
+        window.addEventListener('user-updated', handleCustomEvent);
+        return () => {
+            window.removeEventListener('focus', syncUser);
+            window.removeEventListener('storage', handleStorage);
+            window.removeEventListener('user-updated', handleCustomEvent);
+        };
     }, []);
 
     const [language, setLanguage] = useState('C++');
