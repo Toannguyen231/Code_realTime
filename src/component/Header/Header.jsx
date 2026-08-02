@@ -7,6 +7,7 @@ import LanguageSelector from './LanguageSelector';
 import EditorSettings from '../EditorSettings/EditorSettings';
 import Avatar from '../Avatar/Avatar.jsx';
 import '../Avatar/Avatar.scss';
+import ProfileHoverCard from '../ProfileHoverCard/ProfileHoverCard.jsx';
 import { FiSettings, FiZap } from 'react-icons/fi';
 
 const CODEXA_LOGO = '/codexa-logo-transparent.png';
@@ -43,6 +44,7 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, 
 
   const onlineUserList = onlineUsers.map((u, idx) => ({
     id: idx,
+    userId: u.userId,
     name: u.username,
     initials: u.username ? u.username.slice(0, 2).toUpperCase() : '??',
     color: ['#4caf50', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#00bcd4'][idx % 6],
@@ -142,14 +144,15 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, 
       <div className="header-right">
         <div className="user-avatars">
           {onlineUserList.filter((u) => u.online).map((u) => (
+            <ProfileHoverCard key={u.id} userId={u.userId} username={u.name}>
             <div
-              key={u.id}
               className="user-avatar"
               style={{ backgroundColor: u.color }}
               title={`${u.name} (online)`}
             >
               {u.initials}
             </div>
+            </ProfileHoverCard>
           ))}
         </div>
         <span className="user-count-badge">
@@ -211,6 +214,12 @@ const Header = ({ onRun, isRunning, language, setLanguage, roomId, isConnected, 
                 onClick={() => { setProfileOpen(false); navigate('/profile'); }}
               >
                 <FiUser size={13} /> Profile
+              </button>
+              <button
+                className="profile-menu-item"
+                onClick={() => { setProfileOpen(false); navigate('/settings'); }}
+              >
+                <FiSettings size={13} /> Cài đặt
               </button>
               {currentUser.role === 'admin' && (
                 <button

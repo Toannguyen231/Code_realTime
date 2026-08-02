@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1a2332;
+  background: var(--bg-secondary, #1a2332);
   font-family: var(--login-font) !important;
   overflow: hidden;
   color: #f1f5f9;
@@ -87,9 +87,53 @@
 
 @keyframes orbFloat {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(40px, -30px) scale(1.08); }
-  66% { transform: translate(-30px, 20px) scale(0.92); }
+  25% { transform: translate(30px, -40px) scale(1.05); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(40px, 30px) scale(1.02); }
 }
+
+/* ── New subtle floating code lines animation ── */
+@keyframes codeLineFade {
+  0% { opacity: 0; transform: translateX(-10px); }
+  100% { opacity: 0.85; transform: translateX(0); }
+}
+
+.login-code-decor-lines code {
+  animation: codeLineFade 0.5s ease-out both;
+}
+.login-code-decor-lines code:nth-child(1) { animation-delay: 0.1s; }
+.login-code-decor-lines code:nth-child(2) { animation-delay: 0.15s; }
+.login-code-decor-lines code:nth-child(3) { animation-delay: 0.2s; }
+.login-code-decor-lines code:nth-child(4) { animation-delay: 0.25s; }
+.login-code-decor-lines code:nth-child(5) { animation-delay: 0.3s; }
+.login-code-decor-lines code:nth-child(6) { animation-delay: 0.35s; }
+.login-code-decor-lines code:nth-child(7) { animation-delay: 0.4s; }
+.login-code-decor-lines code:nth-child(8) { animation-delay: 0.45s; }
+.login-code-decor-lines code:nth-child(9) { animation-delay: 0.5s; }
+.login-code-decor-lines code:nth-child(10) { animation-delay: 0.55s; }
+.login-code-decor-lines code:nth-child(11) { animation-delay: 0.6s; }
+.login-code-decor-lines code:nth-child(12) { animation-delay: 0.65s; }
+.login-code-decor-lines code:nth-child(13) { animation-delay: 0.7s; }
+.login-code-decor-lines code:nth-child(14) { animation-delay: 0.75s; }
+
+/* ── Feature pill staggered animation ── */
+.login-feature-pills .pill {
+  animation: fadeInUp 0.4s ease-out both;
+}
+.login-feature-pills .pill:nth-child(1) { animation-delay: 0.1s; }
+.login-feature-pills .pill:nth-child(2) { animation-delay: 0.15s; }
+.login-feature-pills .pill:nth-child(3) { animation-delay: 0.2s; }
+.login-feature-pills .pill:nth-child(4) { animation-delay: 0.25s; }
+.login-feature-pills .pill:nth-child(5) { animation-delay: 0.3s; }
+.login-feature-pills .pill:nth-child(6) { animation-delay: 0.35s; }
+
+/* ── Stat item animation ── */
+.login-stats .stat-item {
+  animation: fadeInUp 0.5s ease-out both;
+}
+.login-stats .stat-item:nth-child(1) { animation-delay: 0.2s; }
+.login-stats .stat-item:nth-child(2) { animation-delay: 0.3s; }
+.login-stats .stat-item:nth-child(3) { animation-delay: 0.4s; }
 
 /* ═══════════════════════════════════════════════════════════════
    LAYOUT — Two columns
@@ -300,6 +344,18 @@
 .login-card {
   width: 100%;
   max-width: 400px;
+  animation: cardEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ─── Tabs ─── */
@@ -335,6 +391,27 @@
 
 .login-tab:hover:not(.active) {
   color: #cbd5e1;
+}
+
+/* ── Tab indicator slider ── */
+.login-tab-indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  width: calc(50% - 3px);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.login-tab-indicator.left {
+  transform: translateX(0);
+}
+
+.login-tab-indicator.right {
+  transform: translateX(calc(100% + 3px));
 }
 
 /* ─── Form ─── */

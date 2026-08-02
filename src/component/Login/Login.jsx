@@ -4,7 +4,7 @@ import { FiMail, FiLock, FiUser, FiCode, FiUsers, FiZap, FiCpu, FiEye, FiEyeOff,
 import { SiCodeforces } from 'react-icons/si';
 import './Login.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // ─── Animated Particles ───
 function ParticleCanvas() {

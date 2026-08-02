@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   FiPlus, FiSearch, FiLogOut, FiRefreshCw, FiUsers, FiClock,
@@ -9,8 +9,10 @@ import '../Avatar/Avatar.scss';
 import './RoomMenu.scss';
 import DailyChallengeCard from '../Daily/DailyChallengeCard.jsx';
 import '../Daily/DailyChallengeCard.scss';
+import UserSearch from '../UserSearch/UserSearch.jsx';
+import { useSettings } from '../../contexts/SettingsContext.jsx';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const timeAgo = (dateStr) => {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -25,6 +27,7 @@ const getInitials = (name) => name ? name.slice(0, 2).toUpperCase() : '??';
 
 const RoomMenu = () => {
   const navigate = useNavigate();
+  const { settings } = useSettings();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -126,6 +129,7 @@ const RoomMenu = () => {
         body: JSON.stringify({
           name: newRoomName.trim() || 'Untitled Room',
           password: newRoomPassword.trim() || '',
+          language: settings?.defaultLanguage || 'C++',
         }),
       });
       const data = await res.json();
@@ -250,6 +254,10 @@ const RoomMenu = () => {
             </Link>
           </div>
           <div className="rm-nav-right">
+            <UserSearch />
+            <button className="rm-icon-btn" onClick={() => navigate('/settings')} title="Cài đặt">
+              <FiSettings />
+            </button>
             <div className="rm-avatar-chip" onClick={() => navigate('/profile')}>
               <div className="rm-dot">{getInitials(currentUser.username)}</div>
               {currentUser.username || 'User'}

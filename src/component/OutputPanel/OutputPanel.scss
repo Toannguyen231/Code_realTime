@@ -1,27 +1,48 @@
-﻿.resize-handle {
+/* ═══════════════════════════════════════════════════════════════
+   ✦ OUTPUT PANEL — Modern glassmorphism design
+   ═══════════════════════════════════════════════════════════════ */
+
+.resize-handle {
   width: 100%;
-  height: 5px;
+  height: 6px;
   background: transparent;
   cursor: ns-resize;
   flex-shrink: 0;
   position: relative;
   transition: background 0.15s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+  }
+
   &::after {
     content: '';
     position: absolute;
-    top: 2px;
+    top: 1.5px;
     left: 50%;
     transform: translateX(-50%);
     width: 40px;
     height: 3px;
-    border-radius: 2px;
+    border-radius: 3px;
     background: var(--border-color);
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+
   &:hover::after, &:active::after {
     background: var(--accent);
-    width: 60px;
-    box-shadow: 0 0 8px rgba(52, 211, 153, 0.3);
+    width: 64px;
+    height: 4px;
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+  }
+
+  &:active {
+    background: var(--accent-dim);
   }
 }
 
@@ -32,6 +53,7 @@
   flex-direction: column;
   flex-shrink: 0;
   overflow: hidden;
+  animation: fadeInUp 0.2s ease-out;
 }
 
 .output-tabs {
@@ -48,17 +70,47 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 14px;
+  padding: 10px 16px;
   font-size: 12px;
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
   border-bottom: 2px solid transparent;
-  transition: all 0.15s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   white-space: nowrap;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%);
+  }
+
   &:hover { color: var(--text-primary); }
-  &.active { color: var(--text-primary); border-bottom-color: var(--accent); }
+
+  &.active {
+    color: var(--text-primary);
+
+    &::after {
+      width: 60%;
+    }
+  }
+
+  svg {
+    transition: transform 0.2s;
+  }
+
+  &:hover svg {
+    transform: scale(1.1);
+  }
 }
 
 .output-tab-actions {
@@ -73,35 +125,64 @@
   border: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 11px;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
   font-family: 'Inter', sans-serif;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  &:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.12); background: var(--bg-hover); }
+  gap: 4px;
+
+  &:hover {
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--bg-hover);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }
 
 .output-body {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.6;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 2px; }
 }
 
-.console-empty { color: var(--text-dim); font-style: italic; font-size: 12px; padding-top: 4px; }
-.console-output { white-space: pre-wrap; word-break: break-word; color: var(--text-primary); }
-.console-output.success { color: var(--accent); }
-.console-output.error { color: #ef4444; }
+.console-empty {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 12px;
+  padding-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.console-output {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text-primary);
+  animation: fadeIn 0.15s ease-out;
+
+  &.success { color: var(--accent); }
+  &.error { color: #ef4444; }
+}
 
 .output-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 14px;
+  padding: 6px 16px;
   border-top: 1px solid var(--border-color);
   background: var(--bg-header);
   flex-shrink: 0;
@@ -110,17 +191,39 @@
 .status-badge {
   font-size: 11px;
   font-weight: 600;
-  padding: 2px 10px;
+  padding: 3px 12px;
   border-radius: 20px;
-  &.accepted { background: var(--accent-dim); color: var(--accent); }
-  &.running { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
-  &.error { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
-  &.idle { background: var(--bg-hover); color: var(--text-dim); }
+  transition: all 0.2s;
+
+  &.accepted {
+    background: var(--accent-dim);
+    color: var(--accent);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.1);
+  }
+
+  &.running {
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+  }
+
+  &.error {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+  }
+
+  &.idle {
+    background: var(--bg-hover);
+    color: var(--text-dim);
+  }
 }
 
-.status-time { font-size: 11px; color: var(--text-dim); margin-left: auto; }
+.status-time {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-left: auto;
+}
 
-/* â”€â”€ Automated Test Cases (Output Panel) â”€â”€ */
+/* ── Automated Test Cases (Output Panel) ── */
 .testcase-area-container {
   display: flex;
   flex-direction: column;
@@ -148,6 +251,7 @@
   color: var(--text-muted);
   margin-bottom: 8px;
   font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
 .run-tests-btn-sm {
@@ -155,23 +259,28 @@
   border: 1px solid rgba(52, 211, 153, 0.3);
   color: #34d399;
   font-size: 11px;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
   font-family: 'Inter', sans-serif;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   font-weight: 600;
-  
+
   &:hover:not(:disabled) {
     background: rgba(52, 211, 153, 0.2);
     border-color: #34d399;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(52, 211, 153, 0.2);
   }
-  
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 }
-

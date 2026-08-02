@@ -1,18 +1,18 @@
-﻿:root {
-  --bg: #070911;
-  --bg-alt: #0b0e18;
-  --card: #10131f;
-  --card-hi: #151a29;
-  --border: rgba(255,255,255,0.07);
+:root {
+  --bg: var(--bg-primary, #070911);
+  --bg-alt: var(--bg-secondary, #0b0e18);
+  --card: var(--bg-card, #10131f);
+  --card-hi: var(--bg-glass, #151a29);
+  --border: var(--border-color, rgba(255,255,255,0.07));
   --border-hi: rgba(255,255,255,0.14);
-  --purple: #9b6bff;
+  --purple: var(--accent-purple, #9b6bff);
   --purple-dim: #6d3fd6;
-  --cyan: #2fe0d0;
+  --cyan: var(--accent, #2fe0d0);
   --amber: #f5a623;
   --green: #34d399;
-  --text: #eef0f7;
-  --text-dim: #8a90a6;
-  --text-faint: #565d75;
+  --text: var(--text-primary, #eef0f7);
+  --text-dim: var(--text-secondary, #8a90a6);
+  --text-faint: var(--text-muted, #565d75);
   --radius: 16px;
   --mono: 'JetBrains Mono', monospace;
   --display: 'Chakra Petch', sans-serif;
@@ -43,7 +43,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(7,9,17,0.72);
+  background: color-mix(in srgb, var(--bg-primary) 72%, transparent);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
 }
@@ -566,7 +566,7 @@
 .rm-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(7, 9, 17, 0.85);
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;

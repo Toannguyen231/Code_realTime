@@ -3,6 +3,7 @@ import './CodeEditor.scss';
 import { FiRotateCcw, FiCopy } from 'react-icons/fi';
 import ConnectionStatus from '../ConnectionStatus/ConnectionStatus';
 import LazyMonacoEditor from './LazyMonacoEditor';
+import { useSettings } from '../../contexts/SettingsContext.jsx';
 
 const DEFAULT_CODE = {
   'C++': `#include <iostream>\nusing namespace std;\n\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}`,
@@ -21,8 +22,9 @@ const languageMap = {
   PHP: 'php',
 };
 
-const CodeEditor = ({ code, setCode, language, socket, roomId, currentUser, settings, connectionStatus, hideToolbar = false }) => {
+const CodeEditor = ({ code, setCode, language, socket, roomId, currentUser, settings: propSettings, connectionStatus, hideToolbar = false }) => {
   const monacoLanguage = languageMap[language] || 'plaintext';
+  const { settings } = useSettings();
   
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
@@ -136,16 +138,17 @@ const CodeEditor = ({ code, setCode, language, socket, roomId, currentUser, sett
         <LazyMonacoEditor
           height="100%"
           language={monacoLanguage}
-          theme={settings?.theme || 'vs-dark'}
+          theme={propSettings?.theme || 'vs-dark'}
           value={code}
           onChange={(value = '') => setCode(value)}
           onMount={handleEditorDidMount}
           options={{
-            minimap: { enabled: settings?.minimap || false },
-            fontSize: settings?.fontSize || 14,
+            minimap: { enabled: propSettings?.minimap || false },
+            fontSize: settings.editorFontSize || 14,
+            tabSize: settings.tabSize || 4,
             automaticLayout: true,
             scrollBeyondLastLine: false,
-            wordWrap: settings?.wordWrap || 'on',
+            wordWrap: propSettings?.wordWrap || 'on',
           }}
         />
       </div>

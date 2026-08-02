@@ -1,6 +1,6 @@
-﻿.dc-card {
-  background: linear-gradient(135deg, rgba(30, 27, 75, 0.5), rgba(15, 23, 42, 0.6));
-  border: 1px solid rgba(99, 102, 241, 0.1);
+.dc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 20px;
@@ -15,8 +15,8 @@
 }
 
 .dc-card.dc-completed {
-  border-color: rgba(52, 211, 153, 0.15);
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.04), rgba(15, 23, 42, 0.6));
+  border-color: var(--accent);
+  background: var(--bg-card);
 }
 
 .dc-card::before {
@@ -64,11 +64,11 @@
 .dc-streak-value {
   font-size: 18px;
   font-weight: 700;
-  color: #fbbf24;
+  color: var(--accent-purple);
 }
 .dc-streak-label {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 /* Body */
@@ -80,13 +80,13 @@
   gap: 8px;
   margin-bottom: 10px;
 }
-.dc-bolt { color: #fbbf24; flex-shrink: 0; }
+.dc-bolt { color: var(--accent-purple); flex-shrink: 0; }
 .dc-label {
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #64748b;
+  color: var(--text-muted);
 }
 .dc-countdown {
   margin-left: auto;
@@ -102,7 +102,7 @@
 .dc-title {
   font-size: 16px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--text-primary);
   margin-bottom: 8px;
   line-height: 1.4;
 }
@@ -119,12 +119,12 @@
   font-weight: 600;
   padding: 2px 10px;
   border-radius: 100px;
-  background: rgba(15, 23, 42, 0.4);
+  background: var(--bg-glass);
   border: 1px solid currentColor;
 }
 .dc-tags {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 /* Completed state */
@@ -165,13 +165,13 @@
 }
 .dc-milestone-label {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted);
   margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 5px;
 }
-.dc-milestone-label strong { color: #e2e8f0; }
+.dc-milestone-label strong { color: var(--text-primary); }
 .dc-milestone-bar {
   height: 4px;
   background: rgba(99, 102, 241, 0.1);

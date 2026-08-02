@@ -1,7 +1,7 @@
-﻿import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft } from 'react-icons/fi';
-import { getMe, updateProfile, updateAvatar, deleteAvatar, changePassword } from './api';
+import { FiArrowLeft, FiSettings } from 'react-icons/fi';
+import { getMe, updateProfile, updateAvatar, deleteAvatar } from './api';
 import { resolveAvatar } from '../../utils/avatar';
 import { getRankImage } from '../../utils/rankImages';
 import API from '../../api';
@@ -28,8 +28,7 @@ const Profile = () => {
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+
   const [rankData, setRankData] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
   const [activityData, setActivityData] = useState(null);
@@ -123,18 +122,7 @@ const Profile = () => {
     finally { setSaving(false); }
   };
 
-  const handleChangePassword = async (e) => {
-    e.preventDefault();
-    clearAlerts();
-    setSaving(true);
-    try {
-      await changePassword(currentPassword, newPassword);
-      setCurrentPassword('');
-      setNewPassword('');
-      setMsg('Đổi mật khẩu thành công');
-    } catch (ex) { setErr(ex.message); }
-    finally { setSaving(false); }
-  };
+
 
   if (loading) return <div className="profile-loading">Đang tải...</div>;
 
@@ -145,6 +133,9 @@ const Profile = () => {
       <header className="profile-header">
         <button type="button" onClick={() => navigate('/rooms')}>
           <FiArrowLeft size={14} /> Quay lại
+        </button>
+        <button type="button" onClick={() => navigate('/settings')} className="btn-settings-link">
+          <FiSettings size={14} /> Cài đặt
         </button>
         <h1>Profile</h1>
       </header>
@@ -264,27 +255,7 @@ const Profile = () => {
             <button type="submit" disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu thay đổi'}</button>
           </form>
 
-          <form className="profile-form" onSubmit={handleChangePassword}>
-            <h2>Đổi mật khẩu</h2>
-            <label htmlFor="currentPassword">Mật khẩu hiện tại</label>
-            <input
-              id="currentPassword"
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              required
-            />
-            <label htmlFor="newPassword">Mật khẩu mới</label>
-            <input
-              id="newPassword"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              minLength={6}
-              required
-            />
-            <button type="submit" disabled={saving}>{saving ? 'Đang xử lý...' : 'Đổi mật khẩu'}</button>
-          </form>
+
           
           <AchievementsPanel />
 

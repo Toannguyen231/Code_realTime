@@ -5,10 +5,12 @@ import Login from './component/Login/Login.jsx';
 import { EmailVerification, ForgotPassword, ResetPassword } from './component/AuthPages.jsx';
 import RoomMenu from './component/RoomMenu/RoomMenu.jsx';
 import Profile from './component/Profile/Profile.jsx';
+import PublicProfile from './component/Profile/PublicProfile.jsx';
 import ProblemListPage from './component/Problems/ProblemListPage.jsx';
 import ProblemPage from './component/Problems/ProblemPage.jsx';
 import AdminDashboard from './component/Admin/AdminDashboard.jsx';
 import BattleHub from './component/Battle/BattleHub.jsx';
+import Settings from './component/Settings/Settings.jsx';
 import BattleQueue from './component/Battle/BattleQueue.jsx';
 import BattleRoom from './component/Battle/BattleRoom.jsx';
 import LandingPage from './landing/LandingPage.jsx';
@@ -23,6 +25,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/rooms" element={<RoomMenu />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/user/:userId" element={<PublicProfile />} />
         <Route path="/problems" element={<ProblemListPage />} />
         <Route path="/problems/:contestId/:index" element={<ProblemPage />} />
         <Route path="/verify-email" element={<EmailVerification />} />

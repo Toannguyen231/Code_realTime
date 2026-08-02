@@ -1,4 +1,8 @@
-﻿.profile-page {
+/* ═══════════════════════════════════════════════════════════════
+   ✦ PROFILE PAGE — Modern glassmorphism design
+   ═══════════════════════════════════════════════════════════════ */
+
+.profile-page {
   height: 100%;
   overflow-y: auto;
   background: var(--bg-primary);
@@ -6,6 +10,7 @@
   padding: 24px 40px 48px;
   width: 100%;
   box-sizing: border-box;
+  animation: fadeIn 0.3s ease-out;
 
   // Center content wrappers
   .profile-header,
@@ -82,6 +87,17 @@
     font-weight: 700;
     margin: 0;
   }
+
+  .btn-settings-link {
+    margin-left: auto;
+    border-color: var(--accent);
+    color: var(--accent);
+
+    &:hover {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+  }
 }
 
 .profile-alert {
@@ -118,11 +134,15 @@
   position: sticky;
   top: 24px;
   z-index: 10;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.4s ease-out;
 
   &:hover {
     box-shadow: var(--shadow-lg), var(--shadow-glow-green);
-    border-color: rgba(52, 211, 153, 0.2);
+    border-color: rgba(52, 211, 153, 0.25);
+    transform: translateY(-2px);
   }
 
   @media (max-width: 768px) {
@@ -196,11 +216,15 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.4s ease-out 0.1s both;
 
   &:hover {
     box-shadow: var(--shadow-md);
     border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
   }
 
   h2 {
@@ -312,11 +336,15 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-md);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.4s ease-out 0.2s both;
 
   &:hover {
     box-shadow: var(--shadow-lg);
     border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
   }
 
   h2 {
@@ -434,11 +462,20 @@
       padding: 15px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInUp 0.3s ease-out both;
+
+      @for $i from 1 through 4 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{$i * 0.05 + 0.3}s;
+        }
+      }
 
       &:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
       }
 
       &.easy {

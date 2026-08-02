@@ -1,0 +1,232 @@
+.us-wrap {
+  position: relative;
+  width: 260px;
+  flex-shrink: 0;
+}
+
+/* ── Input ── */
+.us-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(99, 102, 241, 0.2);
+  }
+
+  &.active,
+  &:focus-within {
+    background: rgba(99, 102, 241, 0.06);
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+  }
+}
+
+.us-icon {
+  color: #64748b;
+  flex-shrink: 0;
+  transition: color 0.2s;
+
+  .us-input-wrap:focus-within & {
+    color: #818cf8;
+  }
+}
+
+.us-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  min-width: 0;
+
+  &::placeholder {
+    color: #475569;
+  }
+}
+
+.us-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 50%;
+  transition: all 0.15s;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+  }
+}
+
+.us-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-top-color: #818cf8;
+  border-radius: 50%;
+  animation: us-spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes us-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Dropdown ── */
+.us-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(15, 18, 30, 0.97);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  border-radius: 14px;
+  box-shadow:
+    0 16px 50px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(99, 102, 241, 0.06);
+  overflow: hidden;
+  z-index: 9990;
+  animation: us-dropdown-in 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  max-height: 380px;
+  overflow-y: auto;
+
+  /* Scrollbar */
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 4px;
+  }
+}
+
+@keyframes us-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Result Item ── */
+.us-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+  }
+}
+
+.us-result-avatar {
+  flex-shrink: 0;
+}
+
+.us-avatar-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.us-avatar-initials {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+}
+
+.us-result-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.us-result-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.us-result-meta {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.us-result-rank {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.us-rank-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.us-rank-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ── Highlight ── */
+.us-highlight {
+  background: rgba(99, 102, 241, 0.25);
+  color: #a5b4fc;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* ── No Result ── */
+.us-no-result {
+  padding: 24px 16px;
+  text-align: center;
+  color: #475569;
+  font-size: 13px;
+}

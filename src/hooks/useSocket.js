@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 import { clearSessionToken, getOrCreateSessionToken } from '../utils/sessionToken';
 
-const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 /**
  * Hook: useSocket

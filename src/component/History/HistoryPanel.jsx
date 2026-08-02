@@ -20,7 +20,7 @@ const HistoryPanel = ({ roomId, token, onRestore, onClose, socket, isConnected, 
     const fetchHistory = useCallback(async () => {
         setLoading(true);
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             const res = await fetch(`${apiUrl}/rooms/${roomId}/history`, {
                 headers: { Authorization: `Bearer ${token}` },
             });

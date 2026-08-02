@@ -1,18 +1,18 @@
-﻿@import '../../index.css';
+@import '../../index.css';
 
 :root {
-  --bg:#07080f;
-  --surface:#12131f;
-  --surface-2:#171927;
-  --surface-3:#1c1f30;
-  --border:#232544;
+  --bg: var(--bg-primary, #07080f);
+  --surface: var(--bg-card, #12131f);
+  --surface-2: var(--bg-secondary, #171927);
+  --surface-3: var(--bg-glass, #1c1f30);
+  --border: var(--border-color, #232544);
   --border-bright:#35386199;
-  --text:#eef0fb;
-  --text-dim:#8e91ac;
-  --text-faint:#5a5d78;
-  --violet:#7c5cff;
+  --text: var(--text-primary, #eef0fb);
+  --text-dim: var(--text-secondary, #8e91ac);
+  --text-faint: var(--text-muted, #5a5d78);
+  --violet: var(--accent-purple, #7c5cff);
   --violet-2:#9d84ff;
-  --cyan:#2dd4d4;
+  --cyan: var(--accent, #2dd4d4);
   --red:#ff4d6d;
   --green:#34d399;
   --gold:#ffb84d;

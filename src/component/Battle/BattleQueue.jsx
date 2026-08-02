@@ -4,7 +4,7 @@ import { FiX, FiClock, FiUsers, FiZap } from 'react-icons/fi';
 import { io } from 'socket.io-client';
 import './BattleQueue.scss';
 
-const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 const BattleQueue = () => {
   const navigate = useNavigate();

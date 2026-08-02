@@ -1,7 +1,9 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Sidebar.scss';
 import { FiChevronLeft, FiChevronRight, FiUsers, FiMessageSquare, FiSend, FiX } from 'react-icons/fi';
 import { FaCrown } from 'react-icons/fa6';
+import ProfileHoverCard from '../ProfileHoverCard/ProfileHoverCard.jsx';
+import { useSettings } from '../../contexts/SettingsContext.jsx';
 
 const AVATAR_COLORS = ['#4caf50', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#00bcd4'];
 const getInitials = (name) => name ? name.slice(0, 2).toUpperCase() : '??';
@@ -20,6 +22,23 @@ const formatMsgTime = (ts) => {
   return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 };
 
+const playBeep = () => {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.1);
+  } catch (e) {
+    // ignore
+  }
+};
+
 const Sidebar = ({ onlineUsers = [], currentUser = {}, roomId, socket, isConnected, roomOwner = '', roomParticipants = [] }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('people'); // 'people' | 'chat'
@@ -29,6 +48,7 @@ const Sidebar = ({ onlineUsers = [], currentUser = {}, roomId, socket, isConnect
   const [now, setNow] = useState(0);
   const chatBottomRef = useRef(null);
   const inputRef = useRef(null);
+  const { settings } = useSettings();
 
   // Cập nhật time mỗi 30s
   useEffect(() => {
@@ -46,6 +66,11 @@ const Sidebar = ({ onlineUsers = [], currentUser = {}, roomId, socket, isConnect
 
     const handleMsg = (msg) => {
       setMessages((prev) => [...prev, msg]);
+      
+      if (settings.soundChat && msg.username !== currentUser.username) {
+        playBeep();
+      }
+
       // Nếu đang không ở tab chat → tăng unread
       setActiveTab((tab) => {
         if (tab !== 'chat') setUnreadCount((c) => c + 1);
@@ -55,7 +80,7 @@ const Sidebar = ({ onlineUsers = [], currentUser = {}, roomId, socket, isConnect
 
     socket.on('receive-message', handleMsg);
     return () => socket.off('receive-message', handleMsg);
-  }, [socket]);
+  }, [socket, settings.soundChat, currentUser.username]);
 
   // Scroll xuống cuối khi có tin mới
   useEffect(() => {
@@ -136,8 +161,8 @@ const Sidebar = ({ onlineUsers = [], currentUser = {}, roomId, socket, isConnect
             const isYou = socket && user.socketId === socket.id;
             const isOwner = user.username === roomOwner;
             return (
+              <ProfileHoverCard key={user.socketId} userId={user.userId} username={user.username}>
               <div
-                key={user.socketId}
                 className={`user-item ${isYou ? 'is-you' : ''}`}
                 title={collapsed ? user.username : ''}
               >
@@ -159,6 +184,7 @@ const Sidebar = ({ onlineUsers = [], currentUser = {}, roomId, socket, isConnect
                   </div>
                 </div>
               </div>
+              </ProfileHoverCard>
             );
           }) : (
             <div className="empty-state">Chưa có ai trong phòng</div>

@@ -7,7 +7,7 @@ import CodeEditor from '../Editor/CodeEditor';
 import LanguageSelector from '../Header/LanguageSelector';
 import './BattleRoom.scss';
 
-const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const SERVER_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 const DEFAULT_CODE = `#include <iostream>
 using namespace std;
 
